@@ -465,7 +465,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     }
 
     /**
-     * 数量权限申请的回调。
+     * 处理权限申请的回调。
      * @param requestCode
      * @param permissions
      * @param grantResults

@@ -2,6 +2,7 @@ package com.donkingliang.imageselector.model;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -20,16 +21,16 @@ public class ImageModel {
     /**
      * 从SDCard加载图片
      *
-     * @param activity
+     * @param context
      * @param callback
      */
-    public static void loadImageForSDCard(final Activity activity, final DataCallback callback) {
+    public static void loadImageForSDCard(final Context context, final DataCallback callback) {
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                ContentResolver mContentResolver = activity.getContentResolver();
+                ContentResolver mContentResolver = context.getContentResolver();
 
                 Cursor mCursor = mContentResolver.query(mImageUri, new String[]{
                                 MediaStore.Images.Media.DATA,
@@ -46,8 +47,10 @@ public class ImageModel {
                     // 获取图片的路径
                     String path = mCursor.getString(
                             mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    //获取图片名称
                     String name = mCursor.getString(
                             mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                    //获取图片时间
                     long time = mCursor.getLong(
                             mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
                     images.add(new Image(path, time, name));
@@ -59,6 +62,11 @@ public class ImageModel {
         }).start();
     }
 
+    /**
+     * 把图片按文件夹拆分，第一个文件夹保存所有的图片
+     * @param images
+     * @return
+     */
     private static ArrayList<Folder> splitFolder(ArrayList<Image> images) {
         ArrayList<Folder> folders = new ArrayList<>();
         folders.add(new Folder("全部图片", images));
@@ -77,6 +85,11 @@ public class ImageModel {
         return folders;
     }
 
+    /**
+     * 跟着图片路径，获取图片文件夹名称
+     * @param path
+     * @return
+     */
     private static String getFolderName(String path) {
         if (StringUtils.isNotEmptyString(path)) {
             String[] strings = path.split(File.separator);

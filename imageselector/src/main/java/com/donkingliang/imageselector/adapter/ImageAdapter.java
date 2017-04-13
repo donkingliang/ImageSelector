@@ -21,12 +21,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private ArrayList<Image> mImages;
     private LayoutInflater mInflater;
 
+    //保存选中的图片
     private ArrayList<Image> mSelectImages = new ArrayList<>();
     private OnImageSelectListener mSelectListener;
     private OnItemClickListener mItemClickListener;
     private int mMaxCount;
     private boolean isSingle;
 
+    /**
+     * @param maxCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param isSingle 是否单选
+     */
     public ImageAdapter(Context context, int maxCount, boolean isSingle) {
         mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
@@ -47,17 +52,22 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .diskCacheStrategy(DiskCacheStrategy.NONE).into(holder.ivImage);
 
         setItemSelect(holder, mSelectImages.contains(image));
+        //点击选中/取消选中图片
         holder.ivSelectIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mSelectImages.contains(image)) {
+                    //如果图片已经选中，就取消选中
                     unSelectImage(image);
                     setItemSelect(holder, false);
                 } else if (isSingle) {
+                    //如果是单选，就先清空已经选中的图片，再选中当前图片
                     clearImageSelect();
                     selectImage(image);
                     setItemSelect(holder,true);
                 } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
+                    //如果不限制图片的选中数量，或者图片的选中数量
+                    // 还没有达到最大限制，就直接选中当前图片。
                     selectImage(image);
                     setItemSelect(holder, true);
                 }
@@ -110,6 +120,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    /**
+     * 设置图片选中和未选中的效果
+     */
     private void setItemSelect(ViewHolder holder, boolean isSelect) {
         if (isSelect) {
             holder.ivSelectIcon.setImageResource(R.drawable.icon_image_select);
