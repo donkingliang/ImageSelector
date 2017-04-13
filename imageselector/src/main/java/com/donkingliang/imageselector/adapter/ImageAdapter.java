@@ -46,7 +46,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Image image = mImages.get(position);
         Glide.with(mContext).load(new File(image.getPath()))
                 .diskCacheStrategy(DiskCacheStrategy.NONE).into(holder.ivImage);
@@ -78,7 +78,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 if(mItemClickListener != null){
-                    mItemClickListener.OnItemClick(image,position);
+                    mItemClickListener.OnItemClick(image,holder.getAdapterPosition());
                 }
             }
         });

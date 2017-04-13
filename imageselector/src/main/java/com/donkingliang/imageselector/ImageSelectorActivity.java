@@ -372,6 +372,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         if (mAdapter == null) {
             return;
         }
+        //因为图片的实体类是Image，而我们返回的是String数组，所以要进行转换。
         ArrayList<Image> selectImages = mAdapter.getSelectImages();
         ArrayList<String> images = new ArrayList<>();
         for (Image image : selectImages) {
@@ -382,6 +383,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(ImageSelectorUtils.SELECT_RESULT, images);
         setResult(RESULT_OK, intent);
+
         finish();
     }
 

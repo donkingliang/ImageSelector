@@ -25,10 +25,11 @@ public class ImageModel {
      * @param callback
      */
     public static void loadImageForSDCard(final Context context, final DataCallback callback) {
+        //由于扫描图片是耗时的操作，所以要在子线程处理。
         new Thread(new Runnable() {
             @Override
             public void run() {
-
+                //扫描图片
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver mContentResolver = context.getContentResolver();
 
@@ -43,19 +44,22 @@ public class ImageModel {
 
                 ArrayList<Image> images = new ArrayList<>();
 
-                while (mCursor.moveToNext()) {
-                    // 获取图片的路径
-                    String path = mCursor.getString(
-                            mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    //获取图片名称
-                    String name = mCursor.getString(
-                            mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
-                    //获取图片时间
-                    long time = mCursor.getLong(
-                            mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                    images.add(new Image(path, time, name));
+                //读取扫描到的图片
+                if (mCursor != null) {
+                    while (mCursor.moveToNext()) {
+                        // 获取图片的路径
+                        String path = mCursor.getString(
+                                mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                        //获取图片名称
+                        String name = mCursor.getString(
+                                mCursor.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                        //获取图片时间
+                        long time = mCursor.getLong(
+                                mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+                        images.add(new Image(path, time, name));
+                    }
+                    mCursor.close();
                 }
-                mCursor.close();
                 Collections.reverse(images);
                 callback.onSuccess(splitFolder(images));
             }
@@ -64,6 +68,7 @@ public class ImageModel {
 
     /**
      * 把图片按文件夹拆分，第一个文件夹保存所有的图片
+     *
      * @param images
      * @return
      */
@@ -87,6 +92,7 @@ public class ImageModel {
 
     /**
      * 跟着图片路径，获取图片文件夹名称
+     *
      * @param path
      * @return
      */
@@ -101,7 +107,7 @@ public class ImageModel {
     }
 
     private static Folder getFolder(String name, List<Folder> folders) {
-        if (folders != null && !folders.isEmpty()) {
+        if (!folders.isEmpty()) {
             int size = folders.size();
             for (int i = 0; i < size; i++) {
                 Folder folder = folders.get(i);

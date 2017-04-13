@@ -38,7 +38,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder,int position) {
         final Folder folder = mFolders.get(position);
         ArrayList<Image> images = folder.getImages();
         holder.tvFolderName.setText(folder.getName());
@@ -55,7 +55,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSelectItem = position;
+                mSelectItem = holder.getAdapterPosition();
                 notifyDataSetChanged();
                 if(mListener != null){
                     mListener.OnFolderSelect(folder);
