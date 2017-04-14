@@ -30,10 +30,10 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 //图片选择Activity
 <activity android:name="com.donkingliang.imageselector.ImageSelectorActivity"
 	//去掉Activity的ActionBar。
-	/使用者可以根据自己的项目去配置，不一定要这样写，只要不Activity的ActionBar去掉就可以了。
+	//使用者可以根据自己的项目去配置，不一定要这样写，只要不Activity的ActionBar去掉就可以了。
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     //横竖屏切换处理。
-    //如果要支持横竖屏切换，一定要加上这句，否则在切换横竖屏的发生异常。
+    //如果要支持横竖屏切换，一定要加上这句，否则在切换横竖屏的时候会发生异常。
     android:configChanges="orientation|keyboardHidden|screenSize"/>
     
 //图片预览Activity
@@ -44,6 +44,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 **3、调起图片选择器**
 
 ImageSelector支持图片的单选、限数量的多选和不限数量的多选。在调起图片选择器的时候需要告诉选择器，是那种情况。为了方便大家的使用，我在项目中提供了一个工具类，可以方便地调起选择器。
+调起选择器只需要简单的一句代码就可以了。
 ```
  //单选
  ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
@@ -72,4 +73,4 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
         }
     }
 ```
-ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的字符串数组返回的，就算是单选，返回的也是ArrayList数组，只不过是ArrayList只要一条数据而已。ArrayList里面的数据就是选中的图片的文件路径。
+ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的字符串数组返回的，就算是单选，返回的也是ArrayList数组，只不过这时候ArrayList只有一条数据而已。ArrayList里面的数据就是选中的图片的文件路径。
