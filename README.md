@@ -67,9 +67,9 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && data != null) {
+	    //获取选择器返回的数据
             ArrayList<String> images = data.getStringArrayListExtra(
             ImageSelectorUtils.SELECT_RESULT);
-            mAdapter.refresh(images);
         }
     }
 ```
