@@ -23,7 +23,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 	compile 'com.github.donkingliang:ImageSelector:1.0.1'
 ```
 **2、配置AndroidManifest.xml**
-```
+```xml
 //储存卡的读取权限
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -45,7 +45,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 
 ImageSelector支持图片的单选、限数量的多选和不限数量的多选。在调起图片选择器的时候需要告诉选择器，是那种情况。为了方便大家的使用，我在项目中提供了一个工具类，可以方便地调起选择器。
 调起选择器只需要简单的一句代码就可以了。
-```
+```java
  //单选
  ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
 
@@ -62,7 +62,7 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
 **4、接收选择器返回的数据**
 
 在Activity的onActivityResult方法中接收选择器返回的数据。
-```
+```java
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
