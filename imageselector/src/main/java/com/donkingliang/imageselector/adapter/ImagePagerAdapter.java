@@ -2,6 +2,7 @@ package com.donkingliang.imageselector.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,30 +18,26 @@ import java.util.List;
 public class ImagePagerAdapter extends PagerAdapter {
 
     private Context mContext;
-    private List<PhotoView> viewList = new ArrayList<>();
+    private List<PhotoView> viewList = new ArrayList<>(4);
     List<Image> mImgList;
     private OnItemClickListener mListener;
 
     public ImagePagerAdapter(Context context, List<Image> imgList) {
         this.mContext = context;
-        createImageViews(imgList);
+        createImageViews();
         mImgList = imgList;
     }
 
-    private void createImageViews(List<Image> imgList) {
-        viewList.clear();
-        if (imgList != null && !imgList.isEmpty()) {
-            int size = imgList.size();
-            for (int i = 0; i < size; i++) {
-                PhotoView imageView = new PhotoView(mContext);
-                viewList.add(imageView);
-            }
+    private void createImageViews() {
+        for (int i = 0; i < 4; i++) {
+            PhotoView imageView = new PhotoView(mContext);
+            viewList.add(imageView);
         }
     }
 
     @Override
     public int getCount() {
-        return viewList == null ? 0 : viewList.size();
+        return mImgList == null ? 0 : mImgList.size();
     }
 
     @Override
@@ -50,12 +47,17 @@ public class ImagePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView(viewList.get(position));
+        if(object instanceof  PhotoView){
+            PhotoView view = (PhotoView)object;
+            view.setImageDrawable(null);
+            viewList.add(view);
+            container.removeView(view);
+        }
     }
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        final PhotoView currentView = viewList.get(position);
+        final PhotoView currentView = viewList.remove(0);
         final Image image = mImgList.get(position);
         container.addView(currentView);
         Glide.with(mContext).load(new File(image.getPath()))
