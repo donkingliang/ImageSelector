@@ -260,6 +260,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 
     /**
      * 设置选中的文件夹，同时刷新图片列表
+     *
      * @param folder
      */
     private void setFolder(Folder folder) {
@@ -356,12 +357,14 @@ public class ImageSelectorActivity extends AppCompatActivity {
      */
     private void changeTime() {
         int firstVisibleItem = getFirstVisibleItem();
-        Image image = mAdapter.getData().get(firstVisibleItem);
-        String time = DateUtils.getImageTime(image.getTime() * 1000);
-        tvTime.setText(time);
-        showTime();
-        mHideHandler.removeCallbacks(mHide);
-        mHideHandler.postDelayed(mHide, 1500);
+        if (firstVisibleItem > 0 && firstVisibleItem < mAdapter.getData().size()) {
+            Image image = mAdapter.getData().get(firstVisibleItem);
+            String time = DateUtils.getImageTime(image.getTime() * 1000);
+            tvTime.setText(time);
+            showTime();
+            mHideHandler.removeCallbacks(mHide);
+            mHideHandler.postDelayed(mHide, 1500);
+        }
     }
 
     private int getFirstVisibleItem() {
@@ -405,6 +408,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 
     /**
      * 处理图片预览页返回的结果
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -468,6 +472,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 
     /**
      * 处理权限申请的回调。
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
