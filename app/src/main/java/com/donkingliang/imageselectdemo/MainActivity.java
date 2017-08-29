@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_single).setOnClickListener(this);
         findViewById(R.id.btn_limit).setOnClickListener(this);
         findViewById(R.id.btn_unlimited).setOnClickListener(this);
+        findViewById(R.id.btn_clip).setOnClickListener(this);
     }
 
     @Override
@@ -61,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
                 //或者
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
+                break;
+
+            case R.id.btn_clip:
+                //单选并剪裁
+                ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
                 break;
         }
     }

@@ -2,6 +2,7 @@ package com.donkingliang.imageselector.utils;
 
 import android.app.Activity;
 
+import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
 
 /**
@@ -33,5 +34,15 @@ public class ImageSelectorUtils {
     public static void openPhoto(Activity activity, int requestCode,
                                  boolean isSingle, int maxSelectCount) {
         ImageSelectorActivity.openActivity(activity, requestCode, isSingle, maxSelectCount);
+    }
+
+    /**
+     * 打开相册，单选图片并剪裁。
+     *
+     * @param activity
+     * @param requestCode
+     */
+    public static void openPhotoAndClip(Activity activity, int requestCode) {
+        ClipImageActivity.openActivity(activity, requestCode);
     }
 }

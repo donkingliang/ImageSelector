@@ -28,10 +28,19 @@
         android:layout_below="@+id/btn_single"
         android:text="多选(不限数量)" />
 
+    <Button
+        android:id="@+id/btn_clip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_unlimited"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/btn_unlimited"
+        android:text="单选并剪裁" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_image"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/btn_unlimited"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btn_unlimited"
+        android:layout_marginTop="10dp" />
 </RelativeLayout>
