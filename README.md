@@ -1,5 +1,5 @@
 # ImageSelector
-Android图片选择器，仿微信的图片选择器的样式和效果。支持图片的单选、限数量的多选和不限数量的多选。支持图片预览和图片文件夹的切换。
+Android图片选择器，仿微信的图片选择器的样式和效果。支持图片的单选、限数量的多选和不限数量的多选。支持图片预览和图片文件夹的切换。支持图片单选并剪裁。
 
 先上效果图：
 
@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	compile 'com.github.donkingliang:ImageSelector:1.1.1'
+	compile 'com.github.donkingliang:ImageSelector:1.2.0'
 ```
 **2、配置AndroidManifest.xml**
 ```xml
@@ -39,7 +39,12 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 //图片预览Activity
 <activity android:name="com.donkingliang.imageselector.PreviewActivity"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-    android:configChanges="orientation|keyboardHidden|screenSize"/>
+    android:configChanges="orientation|keyboardHidden|screenSize"/>
+
+//图片剪切Activity
+<activity
+    android:name="com.donkingliang.imageselector.ClipImageActivity"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 ```
 **3、调起图片选择器**
 
@@ -56,6 +61,9 @@ ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9);
 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
 //或者
 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
+
+//单选并剪裁
+ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
 ```
 REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这个相信大家都能明白。
 
