@@ -357,7 +357,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
      */
     private void changeTime() {
         int firstVisibleItem = getFirstVisibleItem();
-        if (firstVisibleItem > 0 && firstVisibleItem < mAdapter.getData().size()) {
+        if (firstVisibleItem >= 0 && firstVisibleItem < mAdapter.getData().size()) {
             Image image = mAdapter.getData().get(firstVisibleItem);
             String time = DateUtils.getImageTime(image.getTime() * 1000);
             tvTime.setText(time);
