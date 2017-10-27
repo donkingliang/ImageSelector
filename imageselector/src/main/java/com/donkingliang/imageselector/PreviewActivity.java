@@ -201,6 +201,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     /**
      * 显示和隐藏状态栏
+     *
      * @param show
      */
     private void setStatusBarVisible(boolean show) {
@@ -222,18 +223,22 @@ public class PreviewActivity extends AppCompatActivity {
         rlTopBar.postDelayed(new Runnable() {
             @Override
             public void run() {
-                ObjectAnimator animator = ofFloat(rlTopBar, "translationY",
-                        rlTopBar.getTranslationY(), 0).setDuration(300);
-                animator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
-                        rlTopBar.setVisibility(View.VISIBLE);
-                    }
-                });
-                animator.start();
-                ofFloat(rlBottomBar, "translationY", rlBottomBar.getTranslationY(), 0)
-                        .setDuration(300).start();
+                if (rlTopBar != null) {
+                    ObjectAnimator animator = ofFloat(rlTopBar, "translationY",
+                            rlTopBar.getTranslationY(), 0).setDuration(300);
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+                            super.onAnimationStart(animation);
+                            if (rlTopBar != null) {
+                                rlTopBar.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+                    animator.start();
+                    ofFloat(rlBottomBar, "translationY", rlBottomBar.getTranslationY(), 0)
+                            .setDuration(300).start();
+                }
             }
         }, 100);
     }
@@ -249,14 +254,16 @@ public class PreviewActivity extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                rlTopBar.setVisibility(View.GONE);
-                //添加延时，保证rlTopBar完全隐藏后再隐藏StatusBar。
-                rlTopBar.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setStatusBarVisible(false);
-                    }
-                }, 5);
+                if (rlTopBar != null) {
+                    rlTopBar.setVisibility(View.GONE);
+                    //添加延时，保证rlTopBar完全隐藏后再隐藏StatusBar。
+                    rlTopBar.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setStatusBarVisible(false);
+                        }
+                    }, 5);
+                }
             }
         });
         animator.start();
