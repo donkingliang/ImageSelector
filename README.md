@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	compile 'com.github.donkingliang:ImageSelector:1.2.1'
+	compile 'com.github.donkingliang:ImageSelector:1.3.0'
 ```
 **2、配置AndroidManifest.xml**
 ```xml
