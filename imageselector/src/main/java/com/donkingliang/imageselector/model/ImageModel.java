@@ -56,7 +56,9 @@ public class ImageModel {
                         //获取图片时间
                         long time = mCursor.getLong(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                        images.add(new Image(path, time, name));
+                        if (!".downloading".equals(path)) { //过滤未下载完成的文件
+                            images.add(new Image(path, time, name));
+                        }
                     }
                     mCursor.close();
                 }
@@ -88,6 +90,19 @@ public class ImageModel {
             }
         }
         return folders;
+    }
+
+    /*
+    * Java文件操作 获取文件扩展名
+    * */
+    public static String getExtensionName(String filename) {
+        if (filename != null && filename.length() > 0) {
+            int dot = filename.lastIndexOf('.');
+            if (dot > -1 && dot < filename.length() - 1) {
+                return filename.substring(dot + 1);
+            }
+        }
+        return "";
     }
 
     /**

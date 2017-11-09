@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.ImageUtil;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
@@ -38,6 +40,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     private void createImageViews() {
         for (int i = 0; i < 4; i++) {
             PhotoView imageView = new PhotoView(mContext);
+            imageView.setAdjustViewBounds(true);
             viewList.add(imageView);
         }
     }
@@ -71,21 +74,17 @@ public class ImagePagerAdapter extends PagerAdapter {
                 .asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                currentView.setImageBitmap(resource);
                 if (resource != null) {
                     int bw = resource.getWidth();
                     int bh = resource.getHeight();
-                    int vw = currentView.getWidth();
-                    int vh = currentView.getHeight();
-                    if (bw != 0 && bh != 0 && vw != 0 && vh != 0) {
-                        if (1.0f * bh / bw > 1.0f * vh / vw) {
-                            currentView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            float offset = (1.0f * bh * vw / bw - vh) / 2;
-                            adjustOffset(currentView, offset);
-                        } else {
-                            currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                        }
+                    if (bw > 8192 || bh > 8192) {
+                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
+                        setBitmap(currentView, bitmap);
+                    } else {
+                        setBitmap(currentView, resource);
                     }
+                } else {
+                    currentView.setImageBitmap(null);
                 }
             }
         });
@@ -98,6 +97,25 @@ public class ImagePagerAdapter extends PagerAdapter {
             }
         });
         return currentView;
+    }
+
+    private void setBitmap(PhotoView imageView, Bitmap bitmap) {
+        imageView.setImageBitmap(bitmap);
+        if (bitmap != null) {
+            int bw = bitmap.getWidth();
+            int bh = bitmap.getHeight();
+            int vw = imageView.getWidth();
+            int vh = imageView.getHeight();
+            if (bw != 0 && bh != 0 && vw != 0 && vh != 0) {
+                if (1.0f * bh / bw > 1.0f * vh / vw) {
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    float offset = (1.0f * bh * vw / bw - vh) / 2;
+                    adjustOffset(imageView, offset);
+                } else {
+                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                }
+            }
+        }
     }
 
     public void setOnItemClickListener(OnItemClickListener l) {

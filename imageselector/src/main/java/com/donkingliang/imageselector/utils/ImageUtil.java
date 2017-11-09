@@ -46,6 +46,23 @@ public class ImageUtil {
         return "";
     }
 
+    public static Bitmap zoomBitmap(Bitmap bm, int reqWidth, int reqHeight) {
+        // 获得图片的宽高
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        // 计算缩放比例
+        float scaleWidth = ((float) reqWidth) / width;
+        float scaleHeight = ((float) reqHeight) / height;
+        float scale = Math.min(scaleWidth, scaleHeight);
+        // 取得想要缩放的matrix参数
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        // 得到新的图片
+        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix,
+                true);
+        return newbm;
+    }
+
     /**
      * 根据计算的inSampleSize，得到压缩后图片
      *
@@ -130,7 +147,7 @@ public class ImageUtil {
      * @return
      */
     private static int calculateInSampleSize(BitmapFactory.Options options,
-                                      int reqWidth, int reqHeight) {
+                                             int reqWidth, int reqHeight) {
         // 源图片的宽度
         int width = options.outWidth;
         int height = options.outHeight;
