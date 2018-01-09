@@ -1,6 +1,5 @@
 package com.donkingliang.imageselector.model;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -56,7 +55,7 @@ public class ImageModel {
                         //获取图片时间
                         long time = mCursor.getLong(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                        if (!".downloading".equals(path)) { //过滤未下载完成的文件
+                        if (!".downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
                             images.add(new Image(path, time, name));
                         }
                     }
@@ -92,9 +91,9 @@ public class ImageModel {
         return folders;
     }
 
-    /*
-    * Java文件操作 获取文件扩展名
-    * */
+    /**
+     * Java文件操作 获取文件扩展名
+     */
     public static String getExtensionName(String filename) {
         if (filename != null && filename.length() > 0) {
             int dot = filename.lastIndexOf('.');
@@ -106,7 +105,7 @@ public class ImageModel {
     }
 
     /**
-     * 跟着图片路径，获取图片文件夹名称
+     * 根据图片路径，获取图片文件夹名称
      *
      * @param path
      * @return
