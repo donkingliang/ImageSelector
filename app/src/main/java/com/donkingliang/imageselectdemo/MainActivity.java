@@ -55,13 +55,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_limit:
                 //多选(最多9张)
                 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9);
+//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9, mAdapter.getImages()); // 把已选的传入。
                 break;
 
             case R.id.btn_unlimited:
                 //多选(不限数量)
                 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
+//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, mAdapter.getImages()); // 把已选的传入。
                 //或者
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
+//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0, mAdapter.getImages()); // 把已选的传入。
                 break;
 
             case R.id.btn_clip:

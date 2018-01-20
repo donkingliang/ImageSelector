@@ -64,7 +64,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                     //如果是单选，就先清空已经选中的图片，再选中当前图片
                     clearImageSelect();
                     selectImage(image);
-                    setItemSelect(holder,true);
+                    setItemSelect(holder, true);
                 } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
                     //如果不限制图片的选中数量，或者图片的选中数量
                     // 还没有达到最大限制，就直接选中当前图片。
@@ -77,8 +77,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mItemClickListener != null){
-                    mItemClickListener.OnItemClick(image,holder.getAdapterPosition());
+                if (mItemClickListener != null) {
+                    mItemClickListener.OnItemClick(image, holder.getAdapterPosition());
                 }
             }
         });
@@ -86,9 +86,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     /**
      * 选中图片
+     *
      * @param image
      */
-    private void selectImage(Image image){
+    private void selectImage(Image image) {
         mSelectImages.add(image);
         if (mSelectListener != null) {
             mSelectListener.OnImageSelect(image, true, mSelectImages.size());
@@ -97,9 +98,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     /**
      * 取消选中图片
+     *
      * @param image
      */
-    private void unSelectImage(Image image){
+    private void unSelectImage(Image image) {
         mSelectImages.remove(image);
         if (mSelectListener != null) {
             mSelectListener.OnImageSelect(image, false, mSelectImages.size());
@@ -136,10 +138,40 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private void clearImageSelect() {
         if (mImages != null && mSelectImages.size() == 1) {
             int index = mImages.indexOf(mSelectImages.get(0));
-            if(index != -1){
+            if (index != -1) {
                 mSelectImages.clear();
                 notifyItemChanged(index);
             }
+        }
+    }
+
+    public void setSelectedImages(ArrayList<String> selected) {
+        if (mImages != null && selected != null) {
+            for (String path : selected) {
+                if (isFull()) {
+                    return;
+                }
+                for (Image image : mImages) {
+                    if (path.equals(image.getPath())) {
+                        if (!mSelectImages.contains(image)) {
+                            mSelectImages.add(image);
+                        }
+                        break;
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        }
+    }
+
+
+    private boolean isFull() {
+        if (isSingle && mSelectImages.size() == 1) {
+            return true;
+        } else if (mMaxCount > 0 && mSelectImages.size() == mMaxCount) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -173,7 +205,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         void OnImageSelect(Image image, boolean isSelect, int selectCount);
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void OnItemClick(Image image, int position);
     }
 }

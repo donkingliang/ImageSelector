@@ -6,6 +6,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -77,6 +78,10 @@ public class ImageSelectorActivity extends AppCompatActivity {
         }
     };
 
+    //用于接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开选择器，允许用
+    // 户把先前选过的图片传进来，并把这些图片默认为选中状态。
+    private ArrayList<String> mSelectedImages;
+
     /**
      * 启动图片选择器
      *
@@ -84,12 +89,15 @@ public class ImageSelectorActivity extends AppCompatActivity {
      * @param requestCode
      * @param isSingle       是否单选
      * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
+     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
      */
     public static void openActivity(Activity activity, int requestCode,
-                                    boolean isSingle, int maxSelectCount) {
+                                    boolean isSingle, int maxSelectCount, ArrayList<String> selected) {
         Intent intent = new Intent(activity, ImageSelectorActivity.class);
         intent.putExtra(Constants.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(Constants.IS_SINGLE, isSingle);
+        intent.putStringArrayListExtra(Constants.SELECTED, selected);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -101,6 +109,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mMaxCount = intent.getIntExtra(Constants.MAX_SELECT_COUNT, 0);
         isSingle = intent.getBooleanExtra(Constants.IS_SINGLE, false);
+        mSelectedImages = intent.getStringArrayListExtra(Constants.SELECTED);
 
         setStatusBarColor();
         initView();
@@ -529,6 +538,10 @@ public class ImageSelectorActivity extends AppCompatActivity {
                         if (mFolders != null && !mFolders.isEmpty()) {
                             initFolderList();
                             setFolder(mFolders.get(0));
+                            if (mSelectedImages != null && mAdapter != null) {
+                                mAdapter.setSelectedImages(mSelectedImages);
+                                mSelectedImages = null;
+                            }
                         }
                     }
                 });
