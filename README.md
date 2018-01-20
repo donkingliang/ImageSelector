@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	compile 'com.github.donkingliang:ImageSelector:1.3.1'
+	compile 'com.github.donkingliang:ImageSelector:1.4.0'
 ```
 **2、配置AndroidManifest.xml**
 ```xml
@@ -56,16 +56,19 @@ ImageSelector支持图片的单选、限数量的多选和不限数量的多选�
 
 //限数量的多选(比喻最多9张)
 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9);
+ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9, selected); // 把已选的传入。
 
 //不限数量的多选
 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
+ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, selected); // 把已选的传入。
 //或者
 ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
+ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0, selected); // 把已选的传入。
 
 //单选并剪裁
 ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
 ```
-REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这个相信大家都能明白。
+REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这个相信大家都能明白。selected可以在再次打开选择器时，把原来已经选择过的图片传入，使这些图片默认为选中状态。
 
 **4、接收选择器返回的数据**
 
