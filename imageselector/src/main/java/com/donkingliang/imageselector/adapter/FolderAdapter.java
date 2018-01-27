@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
@@ -38,7 +39,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder,int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Folder folder = mFolders.get(position);
         ArrayList<Image> images = folder.getImages();
         holder.tvFolderName.setText(folder.getName());
@@ -46,7 +47,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         if (images != null && !images.isEmpty()) {
             holder.tvFolderSize.setText(images.size() + "张");
             Glide.with(mContext).load(new File(images.get(0).getPath()))
-                    .diskCacheStrategy(DiskCacheStrategy.NONE).into(holder.ivImage);
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .into(holder.ivImage);
         } else {
             holder.tvFolderSize.setText("0张");
             holder.ivImage.setImageBitmap(null);
@@ -57,7 +59,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
             public void onClick(View v) {
                 mSelectItem = holder.getAdapterPosition();
                 notifyDataSetChanged();
-                if(mListener != null){
+                if (mListener != null) {
                     mListener.OnFolderSelect(folder);
                 }
             }
@@ -82,10 +84,10 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
-            ivSelect = (ImageView) itemView.findViewById(R.id.iv_select);
-            tvFolderName = (TextView) itemView.findViewById(R.id.tv_folder_name);
-            tvFolderSize = (TextView) itemView.findViewById(R.id.tv_folder_size);
+            ivImage = itemView.findViewById(R.id.iv_image);
+            ivSelect = itemView.findViewById(R.id.iv_select);
+            tvFolderName = itemView.findViewById(R.id.tv_folder_name);
+            tvFolderSize = itemView.findViewById(R.id.tv_folder_size);
         }
     }
 

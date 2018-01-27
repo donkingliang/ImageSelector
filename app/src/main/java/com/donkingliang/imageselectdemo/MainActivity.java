@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        rvImage = (RecyclerView) findViewById(R.id.rv_image);
+        rvImage = findViewById(R.id.rv_image);
         rvImage.setLayoutManager(new GridLayoutManager(this, 3));
         mAdapter = new ImageAdapter(this);
         rvImage.setAdapter(mAdapter);

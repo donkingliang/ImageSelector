@@ -3,16 +3,18 @@ package com.donkingliang.imageselector.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -70,21 +72,18 @@ public class ImagePagerAdapter extends PagerAdapter {
         final PhotoView currentView = viewList.remove(0);
         final Image image = mImgList.get(position);
         container.addView(currentView);
-        Glide.with(mContext).load(new File(image.getPath()))
-                .asBitmap().diskCacheStrategy(DiskCacheStrategy.NONE).into(new SimpleTarget<Bitmap>() {
+        Glide.with(mContext).asBitmap()
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                .load(new File(image.getPath())).into(new SimpleTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                if (resource != null) {
-                    int bw = resource.getWidth();
-                    int bh = resource.getHeight();
-                    if (bw > 8192 || bh > 8192) {
-                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
-                        setBitmap(currentView, bitmap);
-                    } else {
-                        setBitmap(currentView, resource);
-                    }
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                int bw = resource.getWidth();
+                int bh = resource.getHeight();
+                if (bw > 8192 || bh > 8192) {
+                    Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
+                    setBitmap(currentView, bitmap);
                 } else {
-                    currentView.setImageBitmap(null);
+                    setBitmap(currentView, resource);
                 }
             }
         });

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Image;
 
@@ -49,7 +50,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Image image = mImages.get(position);
         Glide.with(mContext).load(new File(image.getPath()))
-                .diskCacheStrategy(DiskCacheStrategy.NONE).into(holder.ivImage);
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                .into(holder.ivImage);
 
         setItemSelect(holder, mSelectImages.contains(image));
         //点击选中/取消选中图片
@@ -195,9 +197,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
-            ivSelectIcon = (ImageView) itemView.findViewById(R.id.iv_select);
-            ivMasking = (ImageView) itemView.findViewById(R.id.iv_masking);
+            ivImage = itemView.findViewById(R.id.iv_image);
+            ivSelectIcon = itemView.findViewById(R.id.iv_select);
+            ivMasking = itemView.findViewById(R.id.iv_masking);
         }
     }
 
