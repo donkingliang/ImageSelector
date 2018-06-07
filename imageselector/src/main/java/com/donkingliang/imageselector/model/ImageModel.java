@@ -55,7 +55,7 @@ public class ImageModel {
                         //获取图片时间
                         long time = mCursor.getLong(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
-                        if (!".downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
+                        if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
                             images.add(new Image(path, time, name));
                         }
                     }
