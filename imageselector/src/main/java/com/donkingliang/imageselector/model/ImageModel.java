@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
@@ -36,7 +37,8 @@ public class ImageModel {
                                 MediaStore.Images.Media.DATA,
                                 MediaStore.Images.Media.DISPLAY_NAME,
                                 MediaStore.Images.Media.DATE_ADDED,
-                                MediaStore.Images.Media._ID},
+                                MediaStore.Images.Media._ID,
+                                MediaStore.Images.Media.MIME_TYPE},
                         null,
                         null,
                         MediaStore.Images.Media.DATE_ADDED);
@@ -55,8 +57,13 @@ public class ImageModel {
                         //获取图片时间
                         long time = mCursor.getLong(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+
+                        //获取图片类型
+                        String mimeType = mCursor.getString(
+                                mCursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
+
                         if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
-                            images.add(new Image(path, time, name));
+                            images.add(new Image(path, time, name, mimeType));
                         }
                     }
                     mCursor.close();

@@ -24,8 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.donkingliang.imageselector.adapter.ImagePagerAdapter;
-import com.donkingliang.imageselector.constant.Constants;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.view.MyViewPager;
 
 import java.util.ArrayList;
@@ -64,10 +64,10 @@ public class PreviewActivity extends AppCompatActivity {
         tempImages = images;
         tempSelectImages = selectImages;
         Intent intent = new Intent(activity, PreviewActivity.class);
-        intent.putExtra(Constants.MAX_SELECT_COUNT, maxSelectCount);
-        intent.putExtra(Constants.IS_SINGLE, isSingle);
-        intent.putExtra(Constants.POSITION, position);
-        activity.startActivityForResult(intent, Constants.RESULT_CODE);
+        intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
+        intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
+        intent.putExtra(ImageSelector.POSITION, position);
+        activity.startActivityForResult(intent, ImageSelector.RESULT_CODE);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class PreviewActivity extends AppCompatActivity {
         tempSelectImages = null;
 
         Intent intent = getIntent();
-        mMaxCount = intent.getIntExtra(Constants.MAX_SELECT_COUNT, 0);
-        isSingle = intent.getBooleanExtra(Constants.IS_SINGLE, false);
+        mMaxCount = intent.getIntExtra(ImageSelector.MAX_SELECT_COUNT, 0);
+        isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
 
         Resources resources = getResources();
         Bitmap selectBitmap = BitmapFactory.decodeResource(resources, R.drawable.icon_image_select);
@@ -101,7 +101,7 @@ public class PreviewActivity extends AppCompatActivity {
 
         tvIndicator.setText(1 + "/" + mImages.size());
         changeSelect(mImages.get(0));
-        vpImage.setCurrentItem(intent.getIntExtra(Constants.POSITION, 0));
+        vpImage.setCurrentItem(intent.getIntExtra(ImageSelector.POSITION, 0));
     }
 
     private void initView() {
@@ -313,8 +313,8 @@ public class PreviewActivity extends AppCompatActivity {
     public void finish() {
         //Activity关闭时，通过Intent把用户的操作(确定/返回)传给ImageSelectActivity。
         Intent intent = new Intent();
-        intent.putExtra(Constants.IS_CONFIRM, isConfirm);
-        setResult(Constants.RESULT_CODE, intent);
+        intent.putExtra(ImageSelector.IS_CONFIRM, isConfirm);
+        setResult(ImageSelector.RESULT_CODE, intent);
         super.finish();
     }
 }

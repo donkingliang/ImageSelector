@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class Folder {
 
+    private boolean useCamera; // 是否可以调用相机拍照。只有“全部”文件夹才可以拍照
     private String name;
     private ArrayList<Image> images;
 
@@ -36,6 +37,14 @@ public class Folder {
 
     public void setImages(ArrayList<Image> images) {
         this.images = images;
+    }
+
+    public boolean isUseCamera() {
+        return useCamera;
+    }
+
+    public void setUseCamera(boolean useCamera) {
+        this.useCamera = useCamera;
     }
 
     public void addImage(Image image) {

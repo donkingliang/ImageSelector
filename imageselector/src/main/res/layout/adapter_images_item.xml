@@ -18,13 +18,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#111212"/>
+        android:background="#111212" />
 
     <ImageView
         android:id="@+id/iv_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="5dp"
         android:layout_gravity="right"
+        android:padding="5dp"
         android:src="@drawable/icon_image_un_select" />
+
+    <ImageView
+        android:id="@+id/iv_gif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|bottom"
+        android:padding="3dp"
+        android:src="@drawable/ic_gif"
+        android:visibility="gone" />
 </FrameLayout>

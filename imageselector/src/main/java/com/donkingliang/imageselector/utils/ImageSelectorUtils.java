@@ -10,10 +10,11 @@ import java.util.ArrayList;
 /**
  * 提供给外界相册的调用的工具类
  */
+@Deprecated
 public class ImageSelectorUtils {
 
     //图片选择的结果
-    public static final String SELECT_RESULT = "select_result";
+    public static final String SELECT_RESULT = ImageSelector.SELECT_RESULT;
 
     /**
      * 打开相册，选择图片,可多选,不限数量。
@@ -62,7 +63,7 @@ public class ImageSelectorUtils {
      */
     public static void openPhoto(Activity activity, int requestCode,
                                  boolean isSingle, int maxSelectCount, ArrayList<String> selected) {
-        ImageSelectorActivity.openActivity(activity, requestCode, isSingle, maxSelectCount, selected);
+        ImageSelectorActivity.openActivity(activity, requestCode, isSingle, true, maxSelectCount, selected);
     }
 
     /**
@@ -72,6 +73,6 @@ public class ImageSelectorUtils {
      * @param requestCode
      */
     public static void openPhotoAndClip(Activity activity, int requestCode) {
-        ClipImageActivity.openActivity(activity, requestCode);
+        ClipImageActivity.openActivity(activity, requestCode, true, null);
     }
 }

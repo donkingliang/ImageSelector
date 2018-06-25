@@ -12,7 +12,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.donkingliang.imageselector.utils.ImageSelectorUtils;
+import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.view.ClipImageView;
@@ -33,10 +33,13 @@ public class ClipImageActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_clip_image);
 
-        mRequestCode = getIntent().getIntExtra("requestCode", 0);
+        Intent intent = getIntent();
+        mRequestCode = intent.getIntExtra("requestCode", 0);
 
         setStatusBarColor();
-        ImageSelectorUtils.openPhoto(this, mRequestCode, true, 0);
+        ImageSelectorActivity.openActivity(this, mRequestCode, true,
+                intent.getBooleanExtra(ImageSelector.USE_CAMERA, true), 0,
+                intent.getStringArrayListExtra(ImageSelector.SELECTED));
         initView();
     }
 
@@ -78,7 +81,7 @@ public class ClipImageActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (data != null && requestCode == mRequestCode) {
-            ArrayList<String> images = data.getStringArrayListExtra(ImageSelectorUtils.SELECT_RESULT);
+            ArrayList<String> images = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
             Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(images.get(0), 720, 1080);
             if (bitmap != null) {
                 imageView.setBitmapData(bitmap);
@@ -102,15 +105,17 @@ public class ClipImageActivity extends Activity {
             ArrayList<String> selectImages = new ArrayList<>();
             selectImages.add(imagePath);
             Intent intent = new Intent();
-            intent.putStringArrayListExtra(ImageSelectorUtils.SELECT_RESULT, selectImages);
+            intent.putStringArrayListExtra(ImageSelector.SELECT_RESULT, selectImages);
             setResult(RESULT_OK, intent);
         }
         finish();
     }
 
-    public static void openActivity(Activity context, int requestCode) {
+    public static void openActivity(Activity context, int requestCode, boolean useCamera, ArrayList<String> selected) {
         Intent intent = new Intent(context, ClipImageActivity.class);
         intent.putExtra("requestCode", requestCode);
+        intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
+        intent.putExtra(ImageSelector.SELECTED, selected);
         context.startActivityForResult(intent, requestCode);
     }
 }

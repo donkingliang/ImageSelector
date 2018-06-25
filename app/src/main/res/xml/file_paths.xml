@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+
+    <!-- 这个是保存拍照图片的路径,必须配置。 -->
+    <external-path
+        name="images"
+        path="Pictures" />
+</paths>

@@ -11,11 +11,13 @@ public class Image implements Parcelable {
     private String path;
     private long time;
     private String name;
+    private String mimeType;
 
-    public Image(String path, long time, String name) {
+    public Image(String path, long time, String name,String mimeType) {
         this.path = path;
         this.time = time;
         this.name = name;
+        this.mimeType = mimeType;
     }
 
     public String getPath() {
@@ -42,6 +44,18 @@ public class Image implements Parcelable {
         this.name = name;
     }
 
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public boolean isGif(){
+        return "image/gif".equals(mimeType);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -52,15 +66,17 @@ public class Image implements Parcelable {
         dest.writeString(this.path);
         dest.writeLong(this.time);
         dest.writeString(this.name);
+        dest.writeString(this.mimeType);
     }
 
     protected Image(Parcel in) {
         this.path = in.readString();
         this.time = in.readLong();
         this.name = in.readString();
+        this.mimeType = in.readString();
     }
 
-    public static final Creator<Image> CREATOR = new Creator<Image>() {
+    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
         @Override
         public Image createFromParcel(Parcel source) {
             return new Image(source);

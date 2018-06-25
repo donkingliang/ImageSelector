@@ -29,6 +29,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private int mMaxCount;
     private boolean isSingle;
 
+    private static final int TYPE_CAMERA = 1;
+    private static final int TYPE_IMAGE = 2;
+
+    private boolean useCamera;
+
     /**
      * @param maxCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
      * @param isSingle 是否单选
@@ -42,48 +47,77 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.adapter_images_item, parent, false);
-        return new ViewHolder(view);
+        if (viewType == TYPE_IMAGE) {
+            View view = mInflater.inflate(R.layout.adapter_images_item, parent, false);
+            return new ViewHolder(view);
+        } else {
+            View view = mInflater.inflate(R.layout.adapter_camera, parent, false);
+            return new ViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final Image image = mImages.get(position);
-        Glide.with(mContext).load(new File(image.getPath()))
-                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                .into(holder.ivImage);
+        if (getItemViewType(position) == TYPE_IMAGE) {
+            final Image image = getImage(position);
+            Glide.with(mContext).load(new File(image.getPath()))
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .into(holder.ivImage);
 
-        setItemSelect(holder, mSelectImages.contains(image));
-        //点击选中/取消选中图片
-        holder.ivSelectIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSelectImages.contains(image)) {
-                    //如果图片已经选中，就取消选中
-                    unSelectImage(image);
-                    setItemSelect(holder, false);
-                } else if (isSingle) {
-                    //如果是单选，就先清空已经选中的图片，再选中当前图片
-                    clearImageSelect();
-                    selectImage(image);
-                    setItemSelect(holder, true);
-                } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
-                    //如果不限制图片的选中数量，或者图片的选中数量
-                    // 还没有达到最大限制，就直接选中当前图片。
-                    selectImage(image);
-                    setItemSelect(holder, true);
-                }
-            }
-        });
+            setItemSelect(holder, mSelectImages.contains(image));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null) {
-                    mItemClickListener.OnItemClick(image, holder.getAdapterPosition());
+            holder.ivGif.setVisibility(image.isGif() ? View.VISIBLE : View.GONE);
+
+            //点击选中/取消选中图片
+            holder.ivSelectIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mSelectImages.contains(image)) {
+                        //如果图片已经选中，就取消选中
+                        unSelectImage(image);
+                        setItemSelect(holder, false);
+                    } else if (isSingle) {
+                        //如果是单选，就先清空已经选中的图片，再选中当前图片
+                        clearImageSelect();
+                        selectImage(image);
+                        setItemSelect(holder, true);
+                    } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
+                        //如果不限制图片的选中数量，或者图片的选中数量
+                        // 还没有达到最大限制，就直接选中当前图片。
+                        selectImage(image);
+                        setItemSelect(holder, true);
+                    }
                 }
-            }
-        });
+            });
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mItemClickListener != null) {
+                        int p = holder.getAdapterPosition();
+                        mItemClickListener.OnItemClick(image, useCamera ? p - 1 : p);
+                    }
+                }
+            });
+        } else if (getItemViewType(position) == TYPE_CAMERA) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.OnCameraClick();
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (useCamera && position == 0) {
+            return TYPE_CAMERA;
+        } else {
+            return TYPE_IMAGE;
+        }
     }
 
     /**
@@ -110,8 +144,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         }
     }
 
+
     @Override
     public int getItemCount() {
+        return useCamera ? getImageCount() + 1 : getImageCount();
+    }
+
+    private int getImageCount() {
         return mImages == null ? 0 : mImages.size();
     }
 
@@ -119,9 +158,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return mImages;
     }
 
-    public void refresh(ArrayList<Image> data) {
+    public void refresh(ArrayList<Image> data, boolean useCamera) {
         mImages = data;
+        this.useCamera = useCamera;
         notifyDataSetChanged();
+    }
+
+    private Image getImage(int position) {
+        return mImages.get(useCamera ? position - 1 : position);
+    }
+
+    public Image getFirstVisibleImage(int firstVisibleItem) {
+        if (mImages != null) {
+            if (useCamera) {
+                return mImages.get(firstVisibleItem == 0 ? 0 : firstVisibleItem - 1);
+            } else {
+                return mImages.get(firstVisibleItem);
+            }
+        }
+        return null;
     }
 
     /**
@@ -140,9 +195,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private void clearImageSelect() {
         if (mImages != null && mSelectImages.size() == 1) {
             int index = mImages.indexOf(mSelectImages.get(0));
+            mSelectImages.clear();
             if (index != -1) {
-                mSelectImages.clear();
-                notifyItemChanged(index);
+                notifyItemChanged(useCamera ? index + 1 : index);
             }
         }
     }
@@ -194,12 +249,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         ImageView ivImage;
         ImageView ivSelectIcon;
         ImageView ivMasking;
+        ImageView ivGif;
+        ImageView ivCamera;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivImage = itemView.findViewById(R.id.iv_image);
             ivSelectIcon = itemView.findViewById(R.id.iv_select);
             ivMasking = itemView.findViewById(R.id.iv_masking);
+            ivGif = itemView.findViewById(R.id.iv_gif);
+
+            ivCamera = itemView.findViewById(R.id.iv_camera);
         }
     }
 
@@ -209,5 +269,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     public interface OnItemClickListener {
         void OnItemClick(Image image, int position);
+
+        void OnCameraClick();
     }
 }
