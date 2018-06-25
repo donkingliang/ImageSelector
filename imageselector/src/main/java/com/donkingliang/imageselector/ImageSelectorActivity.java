@@ -28,7 +28,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -465,8 +464,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 images.add(mPhotoPath);
                 setResult(images);
                 finish();
-            } else {
-                Log.e("eee", "拍照取消");
             }
         }
     }
