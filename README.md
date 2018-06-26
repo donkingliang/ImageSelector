@@ -27,7 +27,7 @@ ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x�
 
 **2、配置AndroidManifest.xml**
 ```xml
-//储存卡的读取权限
+//储存卡的读写权限
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 //调用相机权限
