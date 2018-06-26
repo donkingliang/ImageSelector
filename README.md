@@ -14,7 +14,6 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
-			// 如果你使用的是1.4.0或更早的版本，这句可以不用。
 			maven { url 'https://maven.google.com' }
 		}
 	}
@@ -22,14 +21,17 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	compile 'com.github.donkingliang:ImageSelector:1.5.1'
+	compile 'com.github.donkingliang:ImageSelector:1.6.0'
 ```
-1.5.0版本中使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和1.5.0版本之间只是Glide版本的差异而已。
+ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
 **2、配置AndroidManifest.xml**
 ```xml
 //储存卡的读取权限
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+//调用相机权限
+<uses-permission android:name="android.permission.CAMERA" />
 
 //图片选择Activity
 <activity android:name="com.donkingliang.imageselector.ImageSelectorActivity"
@@ -49,28 +51,63 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 <activity
     android:name="com.donkingliang.imageselector.ClipImageActivity"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+<!-- Android 7.0 文件共享配置，必须配置 -->
+<provider
+    android:name="android.support.v4.content.FileProvider"
+    android:authorities="${applicationId}.fileprovider"
+    android:exported="false"
+    android:grantUriPermissions="true">
+    <meta-data
+        android:name="android.support.FILE_PROVIDER_PATHS"
+        android:resource="@xml/file_paths" />
+</provider>
 ```
+在res/xml文件夹下创建file_paths.xml文件(名字可以自己定义)
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+
+    <!-- 这个是保存拍照图片的路径,必须配置。 -->
+    <external-path
+        name="images"
+        path="Pictures" />
+</paths>
+```
+
 **3、调起图片选择器**
 
-ImageSelector支持图片的单选、限数量的多选和不限数量的多选。在调起图片选择器的时候需要告诉选择器，是那种情况。为了方便大家的使用，我在项目中提供了一个工具类，可以方便地调起选择器。
-调起选择器只需要简单的一句代码就可以了。
+ImageSelector支持图片的单选、限数量的多选和不限数量的多选。还可以设置是否使用相机、是否剪切图片等配置。ImageSelector提供了统一的调起相册的方法。
 ```java
  //单选
- ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
+ ImageSelector.builder()
+        .useCamera(true) // 设置是否使用拍照
+        .setSingle(true)  //设置是否单选
+        .start(this, REQUEST_CODE); // 打开相册
 
 //限数量的多选(比喻最多9张)
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9);
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9, selected); // 把已选的传入。
+ImageSelector.builder()
+        .useCamera(true) // 设置是否使用拍照
+        .setSingle(false)  //设置是否单选
+        .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
+	.setSelected(selected) // 把已选的图片传入默认选中。
+        .start(this, REQUEST_CODE); // 打开相册
 
 //不限数量的多选
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, selected); // 把已选的传入。
-//或者
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
-ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0, selected); // 把已选的传入。
+ImageSelector.builder()
+        .useCamera(true) // 设置是否使用拍照
+        .setSingle(false)  //设置是否单选
+        .setMaxSelectCount(0) // 图片的最大选择数量，小于等于0时，不限数量。
+	.setSelected(selected) // 把已选的图片传入默认选中。
+        .start(this, REQUEST_CODE); // 打开相册
 
 //单选并剪裁
-ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
+ImageSelector.builder()
+       .useCamera(true) // 设置是否使用拍照
+       .setCrop(true)  // 设置是否使用图片剪切功能。
+       .setSingle(true)  //设置是否单选
+       .start(this, REQUEST_CODE); // 打开相册
 ```
 REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这个相信大家都能明白。selected可以在再次打开选择器时，把原来已经选择过的图片传入，使这些图片默认为选中状态。
 
