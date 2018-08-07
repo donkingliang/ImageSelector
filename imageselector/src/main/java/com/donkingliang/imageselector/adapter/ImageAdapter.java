@@ -28,6 +28,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private OnItemClickListener mItemClickListener;
     private int mMaxCount;
     private boolean isSingle;
+    private boolean isViewImage;
 
     private static final int TYPE_CAMERA = 1;
     private static final int TYPE_IMAGE = 2;
@@ -35,14 +36,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private boolean useCamera;
 
     /**
-     * @param maxCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
-     * @param isSingle 是否单选
+     * @param maxCount    图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param isSingle    是否单选
+     * @param isViewImage 是否点击放大图片查看
      */
-    public ImageAdapter(Context context, int maxCount, boolean isSingle) {
+    public ImageAdapter(Context context, int maxCount, boolean isSingle, boolean isViewImage) {
         mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
         mMaxCount = maxCount;
         this.isSingle = isSingle;
+        this.isViewImage = isViewImage;
     }
 
     @Override
@@ -72,30 +75,20 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             holder.ivSelectIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSelectImages.contains(image)) {
-                        //如果图片已经选中，就取消选中
-                        unSelectImage(image);
-                        setItemSelect(holder, false);
-                    } else if (isSingle) {
-                        //如果是单选，就先清空已经选中的图片，再选中当前图片
-                        clearImageSelect();
-                        selectImage(image);
-                        setItemSelect(holder, true);
-                    } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
-                        //如果不限制图片的选中数量，或者图片的选中数量
-                        // 还没有达到最大限制，就直接选中当前图片。
-                        selectImage(image);
-                        setItemSelect(holder, true);
-                    }
+                    checkedImage(holder, image);
                 }
             });
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        int p = holder.getAdapterPosition();
-                        mItemClickListener.OnItemClick(image, useCamera ? p - 1 : p);
+                    if (isViewImage) {
+                        if (mItemClickListener != null) {
+                            int p = holder.getAdapterPosition();
+                            mItemClickListener.OnItemClick(image, useCamera ? p - 1 : p);
+                        }
+                    } else {
+                        checkedImage(holder, image);
                     }
                 }
             });
@@ -117,6 +110,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             return TYPE_CAMERA;
         } else {
             return TYPE_IMAGE;
+        }
+    }
+
+    private void checkedImage(ViewHolder holder, Image image) {
+        if (mSelectImages.contains(image)) {
+            //如果图片已经选中，就取消选中
+            unSelectImage(image);
+            setItemSelect(holder, false);
+        } else if (isSingle) {
+            //如果是单选，就先清空已经选中的图片，再选中当前图片
+            clearImageSelect();
+            selectImage(image);
+            setItemSelect(holder, true);
+        } else if (mMaxCount <= 0 || mSelectImages.size() < mMaxCount) {
+            //如果不限制图片的选中数量，或者图片的选中数量
+            // 还没有达到最大限制，就直接选中当前图片。
+            selectImage(image);
+            setItemSelect(holder, true);
         }
     }
 

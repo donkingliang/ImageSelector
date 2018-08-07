@@ -21,6 +21,8 @@ public class ImageSelector {
     public static final String MAX_SELECT_COUNT = "max_select_count";
     //是否单选
     public static final String IS_SINGLE = "is_single";
+    //是否点击放大图片查看
+    public static final String IS_VIEW_IMAGE = "is_view_image";
     //是否使用拍照功能
     public static final String USE_CAMERA = "is_camera";
     //原来已选择的图片
@@ -41,6 +43,7 @@ public class ImageSelector {
         private boolean isCrop = false;
         private boolean useCamera = true;
         private boolean isSingle = false;
+        private boolean isViewImage = true;
         private int maxSelectCount;
         private ArrayList<String> selected;
 
@@ -63,6 +66,17 @@ public class ImageSelector {
          */
         public ImageSelectorBuilder setSingle(boolean isSingle) {
             this.isSingle = isSingle;
+            return this;
+        }
+
+        /**
+         * 是否点击放大图片查看,，默认为true
+         *
+         * @param isViewImage
+         * @return
+         */
+        public ImageSelectorBuilder setViewImage(boolean isViewImage) {
+            this.isViewImage = isViewImage;
             return this;
         }
 
@@ -108,9 +122,10 @@ public class ImageSelector {
          */
         public void start(Activity activity, int requestCode) {
             if (isCrop) {
-                ClipImageActivity.openActivity(activity, requestCode, useCamera, selected);
+                ClipImageActivity.openActivity(activity, requestCode, isViewImage, useCamera, selected);
             } else {
-                ImageSelectorActivity.openActivity(activity, requestCode, isSingle, useCamera, maxSelectCount, selected);
+                ImageSelectorActivity.openActivity(activity, requestCode, isSingle, isViewImage,
+                        useCamera, maxSelectCount, selected);
             }
         }
     }

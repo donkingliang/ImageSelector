@@ -63,7 +63,8 @@ public class ImageSelectorUtils {
      */
     public static void openPhoto(Activity activity, int requestCode,
                                  boolean isSingle, int maxSelectCount, ArrayList<String> selected) {
-        ImageSelectorActivity.openActivity(activity, requestCode, isSingle, true, maxSelectCount, selected);
+        ImageSelectorActivity.openActivity(activity, requestCode, isSingle, true,
+                true, maxSelectCount, selected);
     }
 
     /**
@@ -73,6 +74,6 @@ public class ImageSelectorUtils {
      * @param requestCode
      */
     public static void openPhotoAndClip(Activity activity, int requestCode) {
-        ClipImageActivity.openActivity(activity, requestCode, true, null);
+        ClipImageActivity.openActivity(activity, requestCode, true, true, null);
     }
 }

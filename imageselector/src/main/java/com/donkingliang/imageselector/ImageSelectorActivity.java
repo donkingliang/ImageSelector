@@ -77,6 +77,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private boolean isShowTime;
     private boolean isInitFolder;
     private boolean isSingle;
+    private boolean isViewImage = true;
     private int mMaxCount;
 
     private boolean useCamera = true;
@@ -100,17 +101,19 @@ public class ImageSelectorActivity extends AppCompatActivity {
      * @param activity
      * @param requestCode
      * @param isSingle       是否单选
+     * @param isViewImage    是否点击放大图片查看
      * @param useCamera      是否使用拍照功能
      * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
      * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
      *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
      */
     public static void openActivity(Activity activity, int requestCode,
-                                    boolean isSingle, boolean useCamera,
+                                    boolean isSingle, boolean isViewImage, boolean useCamera,
                                     int maxSelectCount, ArrayList<String> selected) {
         Intent intent = new Intent(activity, ImageSelectorActivity.class);
         intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
         intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
+        intent.putExtra(ImageSelector.IS_VIEW_IMAGE, isViewImage);
         intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
         intent.putStringArrayListExtra(ImageSelector.SELECTED, selected);
         activity.startActivityForResult(intent, requestCode);
@@ -124,6 +127,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mMaxCount = intent.getIntExtra(ImageSelector.MAX_SELECT_COUNT, 0);
         isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
+        isViewImage = intent.getBooleanExtra(ImageSelector.IS_VIEW_IMAGE, true);
         useCamera = intent.getBooleanExtra(ImageSelector.USE_CAMERA, true);
         mSelectedImages = intent.getStringArrayListExtra(ImageSelector.SELECTED);
 
@@ -231,7 +235,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         }
 
         rvImage.setLayoutManager(mLayoutManager);
-        mAdapter = new ImageAdapter(this, mMaxCount, isSingle);
+        mAdapter = new ImageAdapter(this, mMaxCount, isSingle,isViewImage);
         rvImage.setAdapter(mAdapter);
         ((SimpleItemAnimator) rvImage.getItemAnimator()).setSupportsChangeAnimations(false);
         if (mFolders != null && !mFolders.isEmpty()) {

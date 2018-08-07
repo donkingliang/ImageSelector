@@ -38,6 +38,7 @@ public class ClipImageActivity extends Activity {
 
         setStatusBarColor();
         ImageSelectorActivity.openActivity(this, mRequestCode, true,
+                intent.getBooleanExtra(ImageSelector.IS_VIEW_IMAGE, true),
                 intent.getBooleanExtra(ImageSelector.USE_CAMERA, true), 0,
                 intent.getStringArrayListExtra(ImageSelector.SELECTED));
         initView();
@@ -111,9 +112,11 @@ public class ClipImageActivity extends Activity {
         finish();
     }
 
-    public static void openActivity(Activity context, int requestCode, boolean useCamera, ArrayList<String> selected) {
+    public static void openActivity(Activity context, int requestCode, boolean isViewImage,
+                                    boolean useCamera, ArrayList<String> selected) {
         Intent intent = new Intent(context, ClipImageActivity.class);
         intent.putExtra("requestCode", requestCode);
+        intent.putExtra(ImageSelector.IS_VIEW_IMAGE, isViewImage);
         intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
         intent.putExtra(ImageSelector.SELECTED, selected);
         context.startActivityForResult(intent, requestCode);
