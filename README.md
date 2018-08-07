@@ -84,6 +84,7 @@ ImageSelector支持图片的单选、限数量的多选和不限数量的多选�
  ImageSelector.builder()
         .useCamera(true) // 设置是否使用拍照
         .setSingle(true)  //设置是否单选
+	.setViewImage(true) //是否点击放大图片查看,，默认为true
         .start(this, REQUEST_CODE); // 打开相册
 
 //限数量的多选(比喻最多9张)
@@ -92,6 +93,7 @@ ImageSelector.builder()
         .setSingle(false)  //设置是否单选
         .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
 	.setSelected(selected) // 把已选的图片传入默认选中。
+	.setViewImage(true) //是否点击放大图片查看,，默认为true
         .start(this, REQUEST_CODE); // 打开相册
 
 //不限数量的多选
@@ -100,6 +102,7 @@ ImageSelector.builder()
         .setSingle(false)  //设置是否单选
         .setMaxSelectCount(0) // 图片的最大选择数量，小于等于0时，不限数量。
 	.setSelected(selected) // 把已选的图片传入默认选中。
+	.setViewImage(true) //是否点击放大图片查看,，默认为true
         .start(this, REQUEST_CODE); // 打开相册
 
 //单选并剪裁
@@ -107,6 +110,7 @@ ImageSelector.builder()
        .useCamera(true) // 设置是否使用拍照
        .setCrop(true)  // 设置是否使用图片剪切功能。
        .setSingle(true)  //设置是否单选
+       .setViewImage(true) //是否点击放大图片查看,，默认为true
        .start(this, REQUEST_CODE); // 打开相册
 ```
 REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这个相信大家都能明白。selected可以在再次打开选择器时，把原来已经选择过的图片传入，使这些图片默认为选中状态。
