@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -115,10 +116,31 @@ public class ClipImageActivity extends Activity {
     public static void openActivity(Activity context, int requestCode, boolean isViewImage,
                                     boolean useCamera, ArrayList<String> selected) {
         Intent intent = new Intent(context, ClipImageActivity.class);
-        intent.putExtra("requestCode", requestCode);
-        intent.putExtra(ImageSelector.IS_VIEW_IMAGE, isViewImage);
-        intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
-        intent.putExtra(ImageSelector.SELECTED, selected);
+        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
         context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openActivity(Fragment fragment, int requestCode, boolean isViewImage,
+                                    boolean useCamera, ArrayList<String> selected) {
+        Intent intent = new Intent(fragment.getContext(), ClipImageActivity.class);
+        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    public static void openActivity(android.app.Fragment fragment, int requestCode, boolean isViewImage,
+                                    boolean useCamera, ArrayList<String> selected) {
+        Intent intent = new Intent(fragment.getActivity(), ClipImageActivity.class);
+        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    public static Bundle dataPackages(int requestCode, boolean isViewImage, boolean useCamera,
+                                      ArrayList<String> selected) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("requestCode", requestCode);
+        bundle.putBoolean(ImageSelector.IS_VIEW_IMAGE, isViewImage);
+        bundle.putBoolean(ImageSelector.USE_CAMERA, useCamera);
+        bundle.putStringArrayList(ImageSelector.SELECTED, selected);
+        return bundle;
     }
 }

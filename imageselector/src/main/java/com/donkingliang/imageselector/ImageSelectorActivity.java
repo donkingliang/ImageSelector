@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.os.EnvironmentCompat;
@@ -111,12 +112,59 @@ public class ImageSelectorActivity extends AppCompatActivity {
                                     boolean isSingle, boolean isViewImage, boolean useCamera,
                                     int maxSelectCount, ArrayList<String> selected) {
         Intent intent = new Intent(activity, ImageSelectorActivity.class);
-        intent.putExtra(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
-        intent.putExtra(ImageSelector.IS_SINGLE, isSingle);
-        intent.putExtra(ImageSelector.IS_VIEW_IMAGE, isViewImage);
-        intent.putExtra(ImageSelector.USE_CAMERA, useCamera);
-        intent.putStringArrayListExtra(ImageSelector.SELECTED, selected);
+        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 启动图片选择器
+     *
+     * @param fragment
+     * @param requestCode
+     * @param isSingle       是否单选
+     * @param isViewImage    是否点击放大图片查看
+     * @param useCamera      是否使用拍照功能
+     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
+     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     */
+    public static void openActivity(Fragment fragment, int requestCode,
+                                    boolean isSingle, boolean isViewImage, boolean useCamera,
+                                    int maxSelectCount, ArrayList<String> selected) {
+        Intent intent = new Intent(fragment.getContext(), ImageSelectorActivity.class);
+        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 启动图片选择器
+     *
+     * @param fragment
+     * @param requestCode
+     * @param isSingle       是否单选
+     * @param isViewImage    是否点击放大图片查看
+     * @param useCamera      是否使用拍照功能
+     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
+     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
+     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     */
+    public static void openActivity(android.app.Fragment fragment, int requestCode,
+                                    boolean isSingle, boolean isViewImage, boolean useCamera,
+                                    int maxSelectCount, ArrayList<String> selected) {
+        Intent intent = new Intent(fragment.getActivity(), ImageSelectorActivity.class);
+        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    public static Bundle dataPackages(boolean isSingle, boolean isViewImage, boolean useCamera,
+                                      int maxSelectCount, ArrayList<String> selected) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ImageSelector.IS_SINGLE, isSingle);
+        bundle.putBoolean(ImageSelector.IS_VIEW_IMAGE, isViewImage);
+        bundle.putBoolean(ImageSelector.USE_CAMERA, useCamera);
+        bundle.putInt(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
+        bundle.putStringArrayList(ImageSelector.SELECTED, selected);
+        return bundle;
     }
 
     @Override
@@ -235,7 +283,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         }
 
         rvImage.setLayoutManager(mLayoutManager);
-        mAdapter = new ImageAdapter(this, mMaxCount, isSingle,isViewImage);
+        mAdapter = new ImageAdapter(this, mMaxCount, isSingle, isViewImage);
         rvImage.setAdapter(mAdapter);
         ((SimpleItemAnimator) rvImage.getItemAnimator()).setSupportsChangeAnimations(false);
         if (mFolders != null && !mFolders.isEmpty()) {

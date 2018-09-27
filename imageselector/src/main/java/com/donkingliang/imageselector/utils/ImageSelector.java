@@ -1,6 +1,7 @@
 package com.donkingliang.imageselector.utils;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
@@ -125,6 +126,36 @@ public class ImageSelector {
                 ClipImageActivity.openActivity(activity, requestCode, isViewImage, useCamera, selected);
             } else {
                 ImageSelectorActivity.openActivity(activity, requestCode, isSingle, isViewImage,
+                        useCamera, maxSelectCount, selected);
+            }
+        }
+
+        /**
+         * 打开相册
+         *
+         * @param fragment
+         * @param requestCode
+         */
+        public void start(Fragment fragment, int requestCode) {
+            if (isCrop) {
+                ClipImageActivity.openActivity(fragment, requestCode, isViewImage, useCamera, selected);
+            } else {
+                ImageSelectorActivity.openActivity(fragment, requestCode, isSingle, isViewImage,
+                        useCamera, maxSelectCount, selected);
+            }
+        }
+
+        /**
+         * 打开相册
+         *
+         * @param fragment
+         * @param requestCode
+         */
+        public void start(android.app.Fragment fragment, int requestCode) {
+            if (isCrop) {
+                ClipImageActivity.openActivity(fragment, requestCode, isViewImage, useCamera, selected);
+            } else {
+                ImageSelectorActivity.openActivity(fragment, requestCode, isSingle, isViewImage,
                         useCamera, maxSelectCount, selected);
             }
         }
