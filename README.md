@@ -21,7 +21,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	compile 'com.github.donkingliang:ImageSelector:1.6.5'
+	compile 'com.github.donkingliang:ImageSelector:1.6.6'
 ```
 ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
