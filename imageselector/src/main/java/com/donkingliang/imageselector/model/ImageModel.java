@@ -3,6 +3,7 @@ package com.donkingliang.imageselector.model;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -62,7 +63,8 @@ public class ImageModel {
                         String mimeType = mCursor.getString(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
 
-                        if (!"downloading".equals(getExtensionName(path))) { //过滤未下载完成的文件
+                        //过滤未下载完成或者不存在的文件
+                        if (!"downloading".equals(getExtensionName(path)) && checkImgExists(path)) {
                             images.add(new Image(path, time, name, mimeType));
                         }
                     }
@@ -72,6 +74,16 @@ public class ImageModel {
                 callback.onSuccess(splitFolder(images));
             }
         }).start();
+    }
+
+    /**
+     * 检查图片是否存在。ContentResolver查询处理的数据有可能文件路径并不存在。
+     *
+     * @param filePath
+     * @return
+     */
+    private static boolean checkImgExists(String filePath) {
+        return new File(filePath).exists();
     }
 
     /**
