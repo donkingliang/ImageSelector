@@ -1,7 +1,7 @@
 package com.donkingliang.imageselector.entry;
 
 
-import com.donkingliang.imageselector.utils.StringUtils;
+import com.donkingliang.imageselector.utils.DateUtils;
 
 import java.util.ArrayList;
 
@@ -48,7 +48,7 @@ public class Folder {
     }
 
     public void addImage(Image image) {
-        if (image != null && StringUtils.isNotEmptyString(image.getPath())) {
+        if (image != null && DateUtils.isNotEmptyString(image.getPath())) {
             if (images == null) {
                 images = new ArrayList<>();
             }

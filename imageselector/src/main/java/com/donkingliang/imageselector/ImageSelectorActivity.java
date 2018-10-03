@@ -42,7 +42,6 @@ import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
-import com.donkingliang.imageselector.utils.ImageSelector;
 
 import java.io.File;
 import java.io.IOException;

@@ -13,9 +13,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageUtil;
-import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.view.ClipImageView;
 
 import java.io.File;
@@ -103,7 +102,7 @@ public class ClipImageActivity extends Activity {
             bitmap = null;
         }
 
-        if (StringUtils.isNotEmptyString(imagePath)) {
+        if (DateUtils.isNotEmptyString(imagePath)) {
             ArrayList<String> selectImages = new ArrayList<>();
             selectImages.add(imagePath);
             Intent intent = new Intent();

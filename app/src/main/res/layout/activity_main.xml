@@ -37,6 +37,46 @@
         android:layout_toRightOf="@+id/btn_unlimited"
         android:text="单选并剪裁" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/btn_clip"
+        android:orientation="horizontal">
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+
+            <RadioGroup
+                android:id="@+id/rg_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_glide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Glide"/>
+
+                <RadioButton
+                    android:id="@+id/rb_picasso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Picasso"/>
+
+                <RadioButton
+                    android:id="@+id/rb_fresco"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fresco" />
+            </RadioGroup>
+        </HorizontalScrollView>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_image"
         android:layout_width="match_parent"

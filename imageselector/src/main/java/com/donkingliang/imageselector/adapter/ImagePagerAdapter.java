@@ -10,11 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.github.chrisbanes.photoview.PhotoView;
@@ -26,6 +21,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 大图预览
+ */
 public class ImagePagerAdapter extends PagerAdapter {
 
     private Context mContext;
@@ -72,28 +70,28 @@ public class ImagePagerAdapter extends PagerAdapter {
         final PhotoView currentView = viewList.remove(0);
         final Image image = mImgList.get(position);
         container.addView(currentView);
-        if (image.isGif()) {
-            currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(mContext).load(new File(image.getPath()))
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .into(currentView);
-        } else {
-            Glide.with(mContext).asBitmap()
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .load(new File(image.getPath())).into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                    int bw = resource.getWidth();
-                    int bh = resource.getHeight();
-                    if (bw > 8192 || bh > 8192) {
-                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
-                        setBitmap(currentView, bitmap);
-                    } else {
-                        setBitmap(currentView, resource);
-                    }
-                }
-            });
-        }
+//        if (image.isGif()) {
+//            currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//            Glide.with(mContext).load(new File(image.getPath()))
+//                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+//                    .into(currentView);
+//        } else {
+//            Glide.with(mContext).asBitmap()
+//                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+//                    .load(new File(image.getPath())).into(new SimpleTarget<Bitmap>() {
+//                @Override
+//                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                    int bw = resource.getWidth();
+//                    int bh = resource.getHeight();
+//                    if (bw > 8192 || bh > 8192) {
+//                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
+//                        setBitmap(currentView, bitmap);
+//                    } else {
+//                        setBitmap(currentView, resource);
+//                    }
+//                }
+//            });
+//        }
         currentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
