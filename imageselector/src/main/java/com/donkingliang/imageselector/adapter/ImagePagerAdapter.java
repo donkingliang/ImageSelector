@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 预览
+ * 大图预览
  */
 public class ImagePagerAdapter extends PagerAdapter {
 
