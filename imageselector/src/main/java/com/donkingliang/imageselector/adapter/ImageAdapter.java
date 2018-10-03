@@ -7,14 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Image;
-import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.ImageSelector;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
@@ -64,9 +60,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_IMAGE) {
             final Image image = getImage(position);
-//            Glide.with(mContext).load(new File(image.getPath()))
-//                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-//                    .into(holder.ivImage);
 
             ImageSelector.builder().getImageLoader()
                     .displayImage(mContext,image.getPath(), holder.ivImage);

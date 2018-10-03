@@ -3,14 +3,12 @@ package com.donkingliang.imageselector.model;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
-import com.donkingliang.imageselector.utils.StringUtils;
+import com.donkingliang.imageselector.utils.DateUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -101,7 +99,7 @@ public class ImageModel {
             for (int i = 0; i < size; i++) {
                 String path = images.get(i).getPath();
                 String name = getFolderName(path);
-                if (StringUtils.isNotEmptyString(name)) {
+                if (DateUtils.isNotEmptyString(name)) {
                     Folder folder = getFolder(name, folders);
                     folder.addImage(images.get(i));
                 }
@@ -130,7 +128,7 @@ public class ImageModel {
      * @return
      */
     private static String getFolderName(String path) {
-        if (StringUtils.isNotEmptyString(path)) {
+        if (DateUtils.isNotEmptyString(path)) {
             String[] strings = path.split(File.separator);
             if (strings.length >= 2) {
                 return strings[strings.length - 2];

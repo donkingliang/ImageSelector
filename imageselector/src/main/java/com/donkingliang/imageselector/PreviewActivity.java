@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.donkingliang.imageselector.adapter.ImagePagerAdapter;
 import com.donkingliang.imageselector.entry.Image;
-import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.view.MyViewPager;
 
 import java.util.ArrayList;

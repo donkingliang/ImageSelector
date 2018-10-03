@@ -39,4 +39,8 @@ public class DateUtils {
                 && calendar1.get(Calendar.MONTH) == calendar2.get(Calendar.MONTH);
     }
 
+    public static boolean isNotEmptyString(String string){
+        return string != null && string.length() > 0;
+    }
+
 }

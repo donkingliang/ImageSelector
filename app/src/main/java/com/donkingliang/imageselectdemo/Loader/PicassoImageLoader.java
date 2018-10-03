@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
-import com.donkingliang.imageselectdemo.R;
 import com.donkingliang.imageselector.loader.BaseImageLoader;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;

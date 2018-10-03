@@ -1,4 +1,4 @@
-package com.donkingliang.imageselector.utils;
+package com.donkingliang.imageselector;
 
 import android.app.Activity;
 import android.support.v4.app.Fragment;
