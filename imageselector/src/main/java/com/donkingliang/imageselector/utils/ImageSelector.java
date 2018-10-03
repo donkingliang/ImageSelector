@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
+import com.donkingliang.imageselector.loader.BaseImageLoader;
 
 import java.util.ArrayList;
 
@@ -15,20 +16,19 @@ import java.util.ArrayList;
  */
 public class ImageSelector {
 
-    //图片选择的结果
+    // 图片选择的结果
     public static final String SELECT_RESULT = "select_result";
-
-    //最大的图片选择数
+    // 最大的图片选择数
     public static final String MAX_SELECT_COUNT = "max_select_count";
-    //是否单选
+    // 否单选
     public static final String IS_SINGLE = "is_single";
-    //是否点击放大图片查看
+    // 是否点击放大图片查看
     public static final String IS_VIEW_IMAGE = "is_view_image";
-    //是否使用拍照功能
+    // 是否使用拍照功能
     public static final String USE_CAMERA = "is_camera";
-    //原来已选择的图片
+    // 原来已选择的图片
     public static final String SELECTED = "selected";
-    //初始位置
+    // 初始位置
     public static final String POSITION = "position";
 
     public static final String IS_CONFIRM = "is_confirm";
@@ -36,7 +36,11 @@ public class ImageSelector {
     public static final int RESULT_CODE = 0x00000012;
 
     public static ImageSelectorBuilder builder() {
-        return new ImageSelectorBuilder();
+        return SingleHolder.INSTANCE;
+    }
+
+    private static class SingleHolder{
+        private static final ImageSelectorBuilder INSTANCE = new ImageSelectorBuilder();
     }
 
     public static class ImageSelectorBuilder {
@@ -47,6 +51,7 @@ public class ImageSelector {
         private boolean isViewImage = true;
         private int maxSelectCount;
         private ArrayList<String> selected;
+        private BaseImageLoader mBaseImageLoader;
 
         /**
          * 是否使用图片剪切功能。默认false。如果使用了图片剪切功能，相册只能单选。
@@ -112,6 +117,16 @@ public class ImageSelector {
          */
         public ImageSelectorBuilder setSelected(ArrayList<String> selected) {
             this.selected = selected;
+            return this;
+        }
+
+
+        public BaseImageLoader getImageLoader() {
+            return mBaseImageLoader;
+        }
+
+        public ImageSelectorBuilder setImageLoader(BaseImageLoader imageLoader) {
+            this.mBaseImageLoader = imageLoader;
             return this;
         }
 

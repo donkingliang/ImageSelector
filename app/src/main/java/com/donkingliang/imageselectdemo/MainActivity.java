@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import com.donkingliang.imageselectdemo.Loader.GlideImageLoader;
+import com.donkingliang.imageselectdemo.Loader.PicassoImageLoader;
 import com.donkingliang.imageselectdemo.adapter.ImageAdapter;
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageSelectorUtils;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //单选
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
                 ImageSelector.builder()
+                        .setImageLoader(new PicassoImageLoader())
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(true)  //设置是否单选
                         .setViewImage(true) //是否点击放大图片查看,，默认为true
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                ImageSelector.builder().setSingle(true).start(this,REQUEST_CODE);
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9, mAdapter.getImages()); // 把已选的传入。
                 ImageSelector.builder()
+                        .setImageLoader(new GlideImageLoader())
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
                         .setViewImage(true) //是否点击放大图片查看,，默认为true
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0, mAdapter.getImages()); // 把已选的传入。
 
                 ImageSelector.builder()
+                        .setImageLoader(new GlideImageLoader())
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
                         .setViewImage(true) //是否点击放大图片查看,，默认为true
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //单选并剪裁
 //                ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
                 ImageSelector.builder()
+                        .setImageLoader(new GlideImageLoader())
                         .useCamera(true) // 设置是否使用拍照
                         .setCrop(true)  // 设置是否使用图片剪切功能。
                         .setSingle(true)  //设置是否单选
