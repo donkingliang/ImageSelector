@@ -512,6 +512,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mPhotoPath))));
                 ArrayList<String> images = new ArrayList<>();
                 images.add(mPhotoPath);
                 setResult(images);
@@ -651,6 +652,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
                             if (mSelectedImages != null && mAdapter != null) {
                                 mAdapter.setSelectedImages(mSelectedImages);
                                 mSelectedImages = null;
+                                setSelectImageCount(mAdapter.getSelectImages().size());
                             }
                         }
                     }
