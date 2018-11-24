@@ -465,13 +465,14 @@ public class ImageSelectorActivity extends AppCompatActivity {
         }
 
         //点击确定，把选中的图片通过Intent传给上一个Activity。
-        setResult(images);
+        setResult(images,false);
         finish();
     }
 
-    private void setResult(ArrayList<String> images) {
+    private void setResult(ArrayList<String> images,boolean isCameraImage) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(ImageSelector.SELECT_RESULT, images);
+        intent.putExtra(ImageSelector.IS_CAMERA_IMAGE,isCameraImage);
         setResult(RESULT_OK, intent);
     }
 
@@ -515,7 +516,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mPhotoPath))));
                 ArrayList<String> images = new ArrayList<>();
                 images.add(mPhotoPath);
-                setResult(images);
+                setResult(images,true);
                 finish();
             }
         }

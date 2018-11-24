@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.donkingliang.imageselectdemo.adapter.ImageAdapter;
 import com.donkingliang.imageselector.utils.ImageSelector;
-import com.donkingliang.imageselector.utils.ImageSelectorUtils;
 
 import java.util.ArrayList;
 
@@ -42,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && data != null) {
             ArrayList<String> images = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
+            boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
+//            Log.d("ImageSelector", "是否是拍照图片：" + isCameraImage);
             mAdapter.refresh(images);
         }
     }

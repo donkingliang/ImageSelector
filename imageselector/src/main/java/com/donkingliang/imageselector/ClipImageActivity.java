@@ -27,6 +27,7 @@ public class ClipImageActivity extends Activity {
     private FrameLayout btnBack;
     private ClipImageView imageView;
     private int mRequestCode;
+    private boolean isCameraImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class ClipImageActivity extends Activity {
 
         if (data != null && requestCode == mRequestCode) {
             ArrayList<String> images = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
+            isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
             Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(images.get(0), 720, 1080);
             if (bitmap != null) {
                 imageView.setBitmapData(bitmap);
@@ -108,6 +110,7 @@ public class ClipImageActivity extends Activity {
             selectImages.add(imagePath);
             Intent intent = new Intent();
             intent.putStringArrayListExtra(ImageSelector.SELECT_RESULT, selectImages);
+            intent.putExtra(ImageSelector.IS_CAMERA_IMAGE,isCameraImage);
             setResult(RESULT_OK, intent);
         }
         finish();

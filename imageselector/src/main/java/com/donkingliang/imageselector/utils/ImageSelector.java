@@ -15,8 +15,17 @@ import java.util.ArrayList;
  */
 public class ImageSelector {
 
-    //图片选择的结果
+    /**
+     * 图片选择的结果
+     */
     public static final String SELECT_RESULT = "select_result";
+
+    /**
+     * 是否是来自于相机拍照的图片，
+     * 只有本次调用相机拍出来的照片，返回时才为true。
+     * 当为true时，图片返回当结果有且只有一张图片。
+     */
+    public static final String IS_CAMERA_IMAGE = "is_camera_image";
 
     //最大的图片选择数
     public static final String MAX_SELECT_COUNT = "max_select_count";
