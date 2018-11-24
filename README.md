@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:1.6.7'
+	implementation 'com.github.donkingliang:ImageSelector:1.6.8'
 ```
 ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
@@ -125,6 +125,13 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
 	    //获取选择器返回的数据
             ArrayList<String> images = data.getStringArrayListExtra(
             ImageSelectorUtils.SELECT_RESULT);
+	    
+	    	/**
+     		* 是否是来自于相机拍照的图片，
+     		* 只有本次调用相机拍出来的照片，返回时才为true。
+     		* 当为true时，图片返回的结果有且只有一张图片。
+		*/
+	    boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
         }
     }
 ```
