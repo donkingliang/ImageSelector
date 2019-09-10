@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -30,6 +31,8 @@ public class ImageModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                boolean isAndroidQ = checkedAndroidQ();
+
                 //扫描图片
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver mContentResolver = context.getContentResolver();
@@ -50,7 +53,8 @@ public class ImageModel {
                 if (mCursor != null) {
                     while (mCursor.moveToNext()) {
                         // 获取图片的路径
-                        String path = mCursor.getString(
+                        int id = mCursor.getColumnIndex(MediaStore.Images.Media._ID);
+                        String path = isAndroidQ ? getPathForAndroidQ(id) : mCursor.getString(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                         //获取图片名称
                         String name = mCursor.getString(
@@ -84,6 +88,20 @@ public class ImageModel {
      */
     private static boolean checkImgExists(String filePath) {
         return new File(filePath).exists();
+    }
+
+    /**
+     * 判断是否是Android Q版本
+     *
+     * @return
+     */
+    public static boolean checkedAndroidQ() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    }
+
+    private static String getPathForAndroidQ(long id) {
+        return MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(id)).build().toString();
     }
 
     /**
