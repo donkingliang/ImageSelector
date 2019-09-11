@@ -74,13 +74,13 @@ public class ImagePagerAdapter extends PagerAdapter {
         container.addView(currentView);
         if (image.isGif()) {
             currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(mContext).load(new File(image.getPath()))
+            Glide.with(mContext).load(image.getUri())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(currentView);
         } else {
             Glide.with(mContext).asBitmap()
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .load(new File(image.getPath())).into(new SimpleTarget<Bitmap>() {
+                    .load(image.getUri()).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     int bw = resource.getWidth();

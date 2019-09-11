@@ -1,7 +1,9 @@
 package com.donkingliang.imageselectdemo.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.donkingliang.imageselectdemo.R;
+import com.donkingliang.imageselector.utils.UriUtils;
+import com.donkingliang.imageselector.utils.VersionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +41,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String image = mImages.get(position);
-        Glide.with(mContext).load(new File(image)).into(holder.ivImage);
+        Uri uri = UriUtils.getImageContentUri(mContext,new File(image));
+        Log.e("eee",image);
+        Log.e("eee",uri.toString());
+        Glide.with(mContext).load(VersionUtils.isAndroidQ() ? uri : new File(image)).into(holder.ivImage);
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +45,8 @@ import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.UriUtils;
+import com.donkingliang.imageselector.utils.VersionUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -73,6 +77,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private static final int PERMISSION_CAMERA_REQUEST_CODE = 0x00000012;
 
     private static final int CAMERA_REQUEST_CODE = 0x00000010;
+    private Uri mCameraUri;
 
     private boolean isOpenFolder;
     private boolean isShowTime;
@@ -82,7 +87,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private int mMaxCount;
 
     private boolean useCamera = true;
-    private String mPhotoPath;
 
     private Handler mHideHandler = new Handler();
     private Runnable mHide = new Runnable() {
@@ -513,9 +517,9 @@ public class ImageSelectorActivity extends AppCompatActivity {
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mPhotoPath))));
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
                 ArrayList<String> images = new ArrayList<>();
-                images.add(mPhotoPath);
+                images.add(UriUtils.getPathForUri(this,mCameraUri));
                 setResult(images,true);
                 finish();
             }
@@ -669,21 +673,60 @@ public class ImageSelectorActivity extends AppCompatActivity {
         Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (captureIntent.resolveActivity(getPackageManager()) != null) {
             File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+            Uri photoUri = null;
+
+            if (VersionUtils.isAndroidQ()){
+                photoUri = createImagePathUri(getApplicationContext());
+            } else {
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                if (photoFile != null) {
+                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                        //通过FileProvider创建一个content类型的Uri
+                        photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+                    } else {
+                        photoUri = Uri.fromFile(photoFile);
+                    }
+                }
             }
 
-            if (photoFile != null) {
-                mPhotoPath = photoFile.getAbsolutePath();
-                //通过FileProvider创建一个content类型的Uri
-                Uri photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+            mCameraUri = photoUri;
+            if (photoUri != null) {
                 captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 captureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivityForResult(captureIntent, CAMERA_REQUEST_CODE);
             }
         }
+    }
+
+    /**
+     * 创建一条图片地址uri,用于保存拍照后的照片
+     *
+     * @param context
+     * @return 图片的uri
+     */
+    public static Uri createImagePathUri(final Context context) {
+        final Uri[] imageFilePath = {null};
+        String status = Environment.getExternalStorageState();
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        long time = System.currentTimeMillis();
+        String imageName = timeFormatter.format(new Date(time));
+        // ContentValues是我们希望这条记录被创建时包含的数据信息
+        ContentValues values = new ContentValues(3);
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
+        values.put(MediaStore.Images.Media.DATE_TAKEN, time);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            imageFilePath[0] = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        } else {
+            imageFilePath[0] = context.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
+        }
+        return imageFilePath[0];
     }
 
     private File createImageFile() throws IOException {

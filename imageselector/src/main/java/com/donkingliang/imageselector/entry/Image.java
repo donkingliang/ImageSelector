@@ -1,5 +1,6 @@
 package com.donkingliang.imageselector.entry;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,12 +13,22 @@ public class Image implements Parcelable {
     private long time;
     private String name;
     private String mimeType;
+    private Uri uri;
 
-    public Image(String path, long time, String name,String mimeType) {
+    public Image(String path, long time, String name, String mimeType, Uri uri) {
         this.path = path;
         this.time = time;
         this.name = name;
         this.mimeType = mimeType;
+        this.uri = uri;
+    }
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     public String getPath() {
@@ -56,6 +67,7 @@ public class Image implements Parcelable {
         return "image/gif".equals(mimeType);
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,6 +79,7 @@ public class Image implements Parcelable {
         dest.writeLong(this.time);
         dest.writeString(this.name);
         dest.writeString(this.mimeType);
+        dest.writeParcelable(this.uri, flags);
     }
 
     protected Image(Parcel in) {
@@ -74,9 +87,10 @@ public class Image implements Parcelable {
         this.time = in.readLong();
         this.name = in.readString();
         this.mimeType = in.readString();
+        this.uri = in.readParcelable(Uri.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
+    public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
         public Image createFromParcel(Parcel source) {
             return new Image(source);

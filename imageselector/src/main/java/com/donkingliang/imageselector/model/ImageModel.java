@@ -3,15 +3,13 @@ package com.donkingliang.imageselector.model;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.StringUtils;
+import com.donkingliang.imageselector.utils.UriUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +29,6 @@ public class ImageModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean isAndroidQ = checkedAndroidQ();
-
                 //扫描图片
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver mContentResolver = context.getContentResolver();
@@ -53,8 +49,8 @@ public class ImageModel {
                 if (mCursor != null) {
                     while (mCursor.moveToNext()) {
                         // 获取图片的路径
-                        int id = mCursor.getColumnIndex(MediaStore.Images.Media._ID);
-                        String path = isAndroidQ ? getPathForAndroidQ(id) : mCursor.getString(
+                        long id = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media._ID));
+                        String path = mCursor.getString(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.DATA));
                         //获取图片名称
                         String name = mCursor.getString(
@@ -69,7 +65,8 @@ public class ImageModel {
 
                         //过滤未下载完成或者不存在的文件
                         if (!"downloading".equals(getExtensionName(path)) && checkImgExists(path)) {
-                            images.add(new Image(path, time, name, mimeType));
+                            images.add(new Image(path, time, name, mimeType,MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
+                                    .appendPath(String.valueOf(id)).build()));
                         }
                     }
                     mCursor.close();
@@ -90,18 +87,9 @@ public class ImageModel {
         return new File(filePath).exists();
     }
 
-    /**
-     * 判断是否是Android Q版本
-     *
-     * @return
-     */
-    public static boolean checkedAndroidQ() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
-    }
-
-    private static String getPathForAndroidQ(long id) {
-        return MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
-                .appendPath(String.valueOf(id)).build().toString();
+    private static String getPathForAndroidQ(Context context,long id) {
+        return UriUtils.getPathForUri(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
+                .appendPath(String.valueOf(id)).build());
     }
 
     /**

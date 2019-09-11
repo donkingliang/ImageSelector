@@ -1,13 +1,17 @@
 package com.donkingliang.imageselector.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,7 +22,7 @@ public class ImageUtil {
 
     public static String saveImage(Bitmap bitmap, String path) {
 
-        String name = new DateFormat().format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.CHINA)) + ".png";
+        String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.getDefault())).toString();
         FileOutputStream b = null;
         File file = new File(path);
         if (!file.exists()) {
@@ -71,12 +75,25 @@ public class ImageUtil {
      * @param reqHeight
      * @return
      */
-    public static Bitmap decodeSampledBitmapFromFile(String pathName, int reqWidth, int reqHeight) {
+    public static Bitmap decodeSampledBitmapFromFile(Context context,String pathName, int reqWidth, int reqHeight) {
 
         int degree = 0;
 
+        Uri uri = UriUtils.getImageContentUri(context,new File(pathName));
+        ParcelFileDescriptor parcelFileDescriptor = null;
+        FileDescriptor fileDescriptor = null;
         try {
-            ExifInterface exifInterface = new ExifInterface(pathName);
+
+            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+            fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+
+            ExifInterface exifInterface = null;
+            if (VersionUtils.isAndroidQ()){
+                exifInterface = new ExifInterface(fileDescriptor);
+            } else {
+                exifInterface = new ExifInterface(pathName);
+            }
+
             int result = exifInterface.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
             switch (result) {
@@ -91,6 +108,7 @@ public class ImageUtil {
                     break;
             }
         } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
 
@@ -99,7 +117,11 @@ public class ImageUtil {
             // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(pathName, options);
+            if (VersionUtils.isAndroidQ()){
+                BitmapFactory.decodeFileDescriptor(fileDescriptor,null,options);
+            } else {
+                BitmapFactory.decodeFile(pathName, options);
+            }
             // 调用上面定义的方法计算inSampleSize值
             options.inSampleSize = calculateInSampleSize(options, reqWidth,
                     reqHeight);
@@ -107,7 +129,15 @@ public class ImageUtil {
             // 使用获取到的inSampleSize值再次解析图片
             options.inJustDecodeBounds = false;
 //            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            Bitmap bitmap = BitmapFactory.decodeFile(pathName, options);
+
+            Bitmap bitmap = null;
+            if (VersionUtils.isAndroidQ()){
+                bitmap = getBitmapFromUri(context,uri,options);
+            } else {
+                bitmap = BitmapFactory.decodeFile(pathName, options);
+            }
+
+            parcelFileDescriptor.close();
 
             if (degree != 0) {
                 Bitmap newBitmap = rotateImageView(bitmap, degree);
@@ -119,8 +149,31 @@ public class ImageUtil {
             return bitmap;
         } catch (OutOfMemoryError error) {
             Log.e("eee", "内存泄露！");
-            return null;
+        } catch (IOException e){
+            e.printStackTrace();
         }
+        return null;
+    }
+
+    /**
+     * 获取Bitmap
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static Bitmap getBitmapFromUri(Context context, Uri uri,BitmapFactory.Options options) {
+        try {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    context.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor,null,options);
+            parcelFileDescriptor.close();
+            return image;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

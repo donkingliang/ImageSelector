@@ -86,7 +86,7 @@ public class ClipImageActivity extends Activity {
         if (data != null && requestCode == mRequestCode) {
             ArrayList<String> images = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
             isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
-            Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(images.get(0), 720, 1080);
+            Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(this,images.get(0), 720, 1080);
             if (bitmap != null) {
                 imageView.setBitmapData(bitmap);
             } else {
