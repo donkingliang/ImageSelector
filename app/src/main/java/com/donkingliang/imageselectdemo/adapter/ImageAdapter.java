@@ -1,9 +1,7 @@
 package com.donkingliang.imageselectdemo.adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +9,10 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.donkingliang.imageselectdemo.R;
+import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.UriUtils;
 import com.donkingliang.imageselector.utils.VersionUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
@@ -22,6 +20,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private Context mContext;
     private ArrayList<String> mImages;
     private LayoutInflater mInflater;
+    private boolean isAndroidQ = VersionUtils.isAndroidQ();
 
     public ImageAdapter(Context context) {
         mContext = context;
@@ -41,10 +40,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final String image = mImages.get(position);
-        Uri uri = UriUtils.getImageContentUri(mContext,new File(image));
-        Log.e("eee",image);
-        Log.e("eee",uri.toString());
-        Glide.with(mContext).load(VersionUtils.isAndroidQ() ? uri : new File(image)).into(holder.ivImage);
+        // 是否是剪切返回的图片
+        boolean isCutImage = ImageUtil.isCutImage(mContext, image);
+        if (isAndroidQ && !isCutImage) {
+            Glide.with(mContext).load(UriUtils.getImageContentUri(mContext, image)).into(holder.ivImage);
+        } else {
+            Glide.with(mContext).load(image).into(holder.ivImage);
+        }
+
     }
 
     @Override

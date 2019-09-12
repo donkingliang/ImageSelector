@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -45,6 +46,9 @@ import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.ImageUtil;
+import com.donkingliang.imageselector.utils.MD5Utils;
+import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.utils.UriUtils;
 import com.donkingliang.imageselector.utils.VersionUtils;
 
@@ -467,16 +471,55 @@ public class ImageSelectorActivity extends AppCompatActivity {
         for (Image image : selectImages) {
             images.add(image.getPath());
         }
-
-        //点击确定，把选中的图片通过Intent传给上一个Activity。
-        setResult(images,false);
-        finish();
+        saveImageAndFinish(images, false);
     }
 
-    private void setResult(ArrayList<String> images,boolean isCameraImage) {
+    private void saveImageAndFinish(final ArrayList<String> images, final boolean isCameraImage) {
+
+        //点击确定，把选中的图片通过Intent传给上一个Activity。
+        setResult(images, isCameraImage);
+        finish();
+
+//        if (!VersionUtils.isAndroidQ() || images.isEmpty()) {
+//            //点击确定，把选中的图片通过Intent传给上一个Activity。
+//            setResult(images, isCameraImage);
+//            finish();
+//        }
+//
+//        // 适配android 10，先把图片拷贝到app私有目录
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                final ArrayList<String> newImages = new ArrayList<>();
+//                Context context = ImageSelectorActivity.this;
+//                String dir = ImageUtil.getImageCacheDir(context);
+//                for (String image : images) {
+//                    String md5 = MD5Utils.md5(image);
+//                    if (md5 != null) {
+//                        Bitmap bitmap = ImageUtil.getBitmapFromUri(context, UriUtils.getImageContentUri(context, image), null);
+//                        if (bitmap != null) {
+//                            String newImage = ImageUtil.saveImage(bitmap, dir, md5);
+//                            if (!StringUtils.isEmptyString(newImage)) {
+//                                newImages.add(newImage);
+//                            }
+//                        }
+//                    }
+//                }
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        setResult(newImages, isCameraImage);
+//                        finish();
+//                    }
+//                });
+//            }
+//        }).start();
+    }
+
+    private void setResult(ArrayList<String> images, boolean isCameraImage) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(ImageSelector.SELECT_RESULT, images);
-        intent.putExtra(ImageSelector.IS_CAMERA_IMAGE,isCameraImage);
+        intent.putExtra(ImageSelector.IS_CAMERA_IMAGE, isCameraImage);
         setResult(RESULT_OK, intent);
     }
 
@@ -519,9 +562,8 @@ public class ImageSelectorActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
                 ArrayList<String> images = new ArrayList<>();
-                images.add(UriUtils.getPathForUri(this,mCameraUri));
-                setResult(images,true);
-                finish();
+                images.add(UriUtils.getPathForUri(this, mCameraUri));
+                saveImageAndFinish(images, true);
             }
         }
     }
@@ -675,7 +717,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
             File photoFile = null;
             Uri photoUri = null;
 
-            if (VersionUtils.isAndroidQ()){
+            if (VersionUtils.isAndroidQ()) {
                 photoUri = createImagePathUri(getApplicationContext());
             } else {
                 try {

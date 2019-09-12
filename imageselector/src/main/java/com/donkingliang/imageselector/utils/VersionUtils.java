@@ -15,6 +15,7 @@ public class VersionUtils {
      * @return
      */
     public static boolean isAndroidQ() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+        return true;
+//        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
     }
 }

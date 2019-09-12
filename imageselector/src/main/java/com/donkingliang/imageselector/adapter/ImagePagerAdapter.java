@@ -17,10 +17,10 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageUtil;
+import com.donkingliang.imageselector.utils.VersionUtils;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     private List<PhotoView> viewList = new ArrayList<>(4);
     List<Image> mImgList;
     private OnItemClickListener mListener;
+    private boolean isAndroidQ = VersionUtils.isAndroidQ();
 
     public ImagePagerAdapter(Context context, List<Image> imgList) {
         this.mContext = context;
@@ -74,13 +75,13 @@ public class ImagePagerAdapter extends PagerAdapter {
         container.addView(currentView);
         if (image.isGif()) {
             currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(mContext).load(image.getUri())
+            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(currentView);
         } else {
             Glide.with(mContext).asBitmap()
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .load(image.getUri()).into(new SimpleTarget<Bitmap>() {
+                    .load(isAndroidQ ? image.getUri() : image.getPath()).into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     int bw = resource.getWidth();

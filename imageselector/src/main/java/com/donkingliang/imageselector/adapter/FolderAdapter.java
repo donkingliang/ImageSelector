@@ -14,8 +14,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.VersionUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder> {
@@ -25,6 +25,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
     private LayoutInflater mInflater;
     private int mSelectItem;
     private OnFolderSelectListener mListener;
+    private boolean isAndroidQ = VersionUtils.isAndroidQ();
 
     public FolderAdapter(Context context, ArrayList<Folder> folders) {
         mContext = context;
@@ -46,7 +47,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         holder.ivSelect.setVisibility(mSelectItem == position ? View.VISIBLE : View.GONE);
         if (images != null && !images.isEmpty()) {
             holder.tvFolderSize.setText(images.size() + "张");
-            Glide.with(mContext).load(images.get(0).getUri())
+            Glide.with(mContext).load(isAndroidQ ? images.get(0).getUri() : images.get(0).getPath())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(holder.ivImage);
         } else {

@@ -10,6 +10,9 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
+
+import java.io.File;
 
 /**
  * @Author teach-梁任彦
@@ -155,22 +158,21 @@ public class UriUtils {
     /**
      * 图片路径转uri
      * @param context
-     * @param imageFile
+     * @param path
      * @return
      */
-    public static Uri getImageContentUri(Context context, java.io.File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
+    public static Uri getImageContentUri(Context context, String path) {
         Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[] { MediaStore.Images.Media._ID }, MediaStore.Images.Media.DATA + "=? ",
-                new String[] { filePath }, null);
+                new String[] { path }, null);
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
             Uri baseUri = Uri.parse("content://media/external/images/media");
             return Uri.withAppendedPath(baseUri, "" + id);
         } else {
-            if (imageFile.exists()) {
+            if (new File(path).exists()) {
                 ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
+                values.put(MediaStore.Images.Media.DATA, path);
                 return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             } else {
                 return null;

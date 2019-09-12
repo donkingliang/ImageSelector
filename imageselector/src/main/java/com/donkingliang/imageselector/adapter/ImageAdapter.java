@@ -12,8 +12,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.VersionUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
@@ -34,6 +34,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private static final int TYPE_IMAGE = 2;
 
     private boolean useCamera;
+
+    private boolean isAndroidQ = VersionUtils.isAndroidQ();
 
     /**
      * @param maxCount    图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
@@ -63,7 +65,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_IMAGE) {
             final Image image = getImage(position);
-            Glide.with(mContext).load(image.getUri())
+            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(holder.ivImage);
 

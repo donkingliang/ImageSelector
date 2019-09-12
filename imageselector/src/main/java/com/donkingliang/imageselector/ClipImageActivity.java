@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +21,8 @@ import com.donkingliang.imageselector.view.ClipImageView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class ClipImageActivity extends Activity {
 
@@ -86,7 +89,7 @@ public class ClipImageActivity extends Activity {
         if (data != null && requestCode == mRequestCode) {
             ArrayList<String> images = data.getStringArrayListExtra(ImageSelector.SELECT_RESULT);
             isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
-            Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(this,images.get(0), 720, 1080);
+            Bitmap bitmap = ImageUtil.decodeSampledBitmapFromFile(this, images.get(0), 720, 1080);
             if (bitmap != null) {
                 imageView.setBitmapData(bitmap);
             } else {
@@ -100,7 +103,9 @@ public class ClipImageActivity extends Activity {
     private void confirm(Bitmap bitmap) {
         String imagePath = null;
         if (bitmap != null) {
-            imagePath = ImageUtil.saveImage(bitmap, getCacheDir().getPath() + File.separator + "image_select");
+            String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.getDefault())).toString();
+            String path = ImageUtil.getImageCacheDir(this);
+            imagePath = ImageUtil.saveImage(bitmap, path, name);
             bitmap.recycle();
             bitmap = null;
         }
@@ -110,7 +115,7 @@ public class ClipImageActivity extends Activity {
             selectImages.add(imagePath);
             Intent intent = new Intent();
             intent.putStringArrayListExtra(ImageSelector.SELECT_RESULT, selectImages);
-            intent.putExtra(ImageSelector.IS_CAMERA_IMAGE,isCameraImage);
+            intent.putExtra(ImageSelector.IS_CAMERA_IMAGE, isCameraImage);
             setResult(RESULT_OK, intent);
         }
         finish();

@@ -8,8 +8,10 @@ import android.provider.MediaStore;
 
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.utils.UriUtils;
+import com.donkingliang.imageselector.utils.VersionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class ImageModel {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                boolean isAndroidQ = VersionUtils.isAndroidQ();
+
                 //扫描图片
                 Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver mContentResolver = context.getContentResolver();
@@ -63,10 +68,16 @@ public class ImageModel {
                         String mimeType = mCursor.getString(
                                 mCursor.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
 
+                        //获取图片uri
+                        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
+                                .appendPath(String.valueOf(id)).build();
+
                         //过滤未下载完成或者不存在的文件
-                        if (!"downloading".equals(getExtensionName(path)) && checkImgExists(path)) {
-                            images.add(new Image(path, time, name, mimeType,MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
-                                    .appendPath(String.valueOf(id)).build()));
+                        boolean isEffective = isAndroidQ ? ImageUtil.isEffective(context, uri) : ImageUtil.isEffective(path);
+                        //过滤剪切保存的图片；
+                        boolean isCutImage = ImageUtil.isCutImage(context, path);
+                        if (isEffective && !isCutImage) {
+                            images.add(new Image(path, time, name, mimeType, uri));
                         }
                     }
                     mCursor.close();
@@ -87,8 +98,8 @@ public class ImageModel {
         return new File(filePath).exists();
     }
 
-    private static String getPathForAndroidQ(Context context,long id) {
-        return UriUtils.getPathForUri(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
+    private static String getPathForAndroidQ(Context context, long id) {
+        return UriUtils.getPathForUri(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon()
                 .appendPath(String.valueOf(id)).build());
     }
 

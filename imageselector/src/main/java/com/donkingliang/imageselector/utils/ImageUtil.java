@@ -1,11 +1,13 @@
 package com.donkingliang.imageselector.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -15,14 +17,40 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class ImageUtil {
 
-    public static String saveImage(Bitmap bitmap, String path) {
+    /**
+     * 获取缓存图片的文件夹
+     *
+     * @param context
+     * @return
+     */
+    public static String getImageCacheDir(Context context) {
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            // context.getFilesDir().getPath(); 不这样写  有些机型会报错
+            if (VersionUtils.isAndroidQ()) {
+                cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+            } else {
+                cachePath = context.getExternalCacheDir().getPath();
+            }
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }
+        return cachePath + File.separator + "image_select";
+    }
 
-        String name = DateFormat.format("yyyyMMdd_hhmmss", Calendar.getInstance(Locale.getDefault())).toString();
+    /**
+     * 保存图片
+     *
+     * @param bitmap
+     * @param path
+     * @param name
+     * @return
+     */
+    public static String saveImage(Bitmap bitmap, String path, String name) {
         FileOutputStream b = null;
         File file = new File(path);
         if (!file.exists()) {
@@ -75,11 +103,12 @@ public class ImageUtil {
      * @param reqHeight
      * @return
      */
-    public static Bitmap decodeSampledBitmapFromFile(Context context,String pathName, int reqWidth, int reqHeight) {
+    @SuppressLint("NewApi")
+    public static Bitmap decodeSampledBitmapFromFile(Context context, String pathName, int reqWidth, int reqHeight) {
 
         int degree = 0;
 
-        Uri uri = UriUtils.getImageContentUri(context,new File(pathName));
+        Uri uri = UriUtils.getImageContentUri(context, pathName);
         ParcelFileDescriptor parcelFileDescriptor = null;
         FileDescriptor fileDescriptor = null;
         try {
@@ -88,7 +117,7 @@ public class ImageUtil {
             fileDescriptor = parcelFileDescriptor.getFileDescriptor();
 
             ExifInterface exifInterface = null;
-            if (VersionUtils.isAndroidQ()){
+            if (VersionUtils.isAndroidQ()) {
                 exifInterface = new ExifInterface(fileDescriptor);
             } else {
                 exifInterface = new ExifInterface(pathName);
@@ -117,8 +146,8 @@ public class ImageUtil {
             // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            if (VersionUtils.isAndroidQ()){
-                BitmapFactory.decodeFileDescriptor(fileDescriptor,null,options);
+            if (VersionUtils.isAndroidQ()) {
+                BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
             } else {
                 BitmapFactory.decodeFile(pathName, options);
             }
@@ -131,8 +160,8 @@ public class ImageUtil {
 //            options.inPreferredConfig = Bitmap.Config.RGB_565;
 
             Bitmap bitmap = null;
-            if (VersionUtils.isAndroidQ()){
-                bitmap = getBitmapFromUri(context,uri,options);
+            if (VersionUtils.isAndroidQ()) {
+                bitmap = getBitmapFromUri(context, uri, options);
             } else {
                 bitmap = BitmapFactory.decodeFile(pathName, options);
             }
@@ -149,7 +178,7 @@ public class ImageUtil {
             return bitmap;
         } catch (OutOfMemoryError error) {
             Log.e("eee", "内存泄露！");
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
@@ -162,12 +191,23 @@ public class ImageUtil {
      * @param uri
      * @return
      */
-    public static Bitmap getBitmapFromUri(Context context, Uri uri,BitmapFactory.Options options) {
+    public static Bitmap getBitmapFromUri(Context context, Uri uri) {
+        return getBitmapFromUri(context, uri, null);
+    }
+
+    /**
+     * 获取Bitmap
+     *
+     * @param context
+     * @param uri
+     * @return
+     */
+    public static Bitmap getBitmapFromUri(Context context, Uri uri, BitmapFactory.Options options) {
         try {
             ParcelFileDescriptor parcelFileDescriptor =
                     context.getContentResolver().openFileDescriptor(uri, "r");
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor,null,options);
+            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
             parcelFileDescriptor.close();
             return image;
         } catch (Exception e) {
@@ -216,4 +256,40 @@ public class ImageUtil {
         return inSampleSize;
     }
 
+    public static boolean isEffective(String path) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        return options.outWidth > 0 && options.outHeight > 0;
+    }
+
+    public static boolean isEffective(Context context, Uri uri) {
+        try {
+            ParcelFileDescriptor parcelFileDescriptor =
+                    context.getContentResolver().openFileDescriptor(uri, "r");
+            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
+            return options.outWidth > 0 && options.outHeight > 0;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 是否是剪切返回的图片
+     * @param context
+     * @param path
+     * @return
+     */
+    public static boolean isCutImage(Context context, String path) {
+        if (!StringUtils.isEmptyString(path)) {
+            String dir = getImageCacheDir(context);
+            return path.startsWith(dir);
+        }
+        return false;
+
+    }
 }
