@@ -142,6 +142,7 @@ ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的
 **适配android 10**
 
 兼容android 10的手机请使用1.7.0版本。
+
 由于android 10不允许应用直接访问外部文件，所以在android 10及以上的手机，ImageSelect返回的图片链接可能无法直接加载,因为ImageSelect返回的是图片在手机里的地址。但是可以通过uri进行加载，ImageSelect内部提供了一些方法可以供外部使用，用于适配android 10。
 ```
 //是否是android 10及以上
