@@ -82,6 +82,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 0x00000010;
     private Uri mCameraUri;
+    private String mCameraImagePath;
 
     private boolean isOpenFolder;
     private boolean isShowTime;
@@ -560,9 +561,14 @@ public class ImageSelectorActivity extends AppCompatActivity {
             }
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
                 ArrayList<String> images = new ArrayList<>();
-                images.add(UriUtils.getPathForUri(this, mCameraUri));
+                if (VersionUtils.isAndroidQ()) {
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
+                    images.add(UriUtils.getPathForUri(this, mCameraUri));
+                } else {
+                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mCameraImagePath))));
+                    images.add(mCameraImagePath);
+                }
                 saveImageAndFinish(images, true);
             }
         }
@@ -727,9 +733,10 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 }
 
                 if (photoFile != null) {
+                    mCameraImagePath = photoFile.getAbsolutePath();
                     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                         //通过FileProvider创建一个content类型的Uri
-                        photoUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", photoFile);
+                        photoUri = FileProvider.getUriForFile(this, getPackageName() + ".imageSelectorProvider", photoFile);
                     } else {
                         photoUri = Uri.fromFile(photoFile);
                     }

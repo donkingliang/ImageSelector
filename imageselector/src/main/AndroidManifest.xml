@@ -2,10 +2,16 @@
     package="com.donkingliang.imageselector">
 
     <application
-        android:allowBackup="true"
-        android:label="@string/app_name"
-        android:supportsRtl="true">
-
+        android:label="@string/app_name">
+        <provider
+            android:name="com.donkingliang.imageselector.provider.ImageSelectorProvider"
+            android:authorities="${applicationId}.imageSelectorProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/image_selector_file_paths" />
+        </provider>
     </application>
 
 </manifest>
