@@ -143,7 +143,7 @@ ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的
 
 兼容android 10的手机请使用1.7.0版本。
 
-由于android 10不允许应用直接访问外部文件，所以在android 10及以上的手机，ImageSelect返回的图片链接可能无法直接加载,因为ImageSelect返回的是图片在手机里的地址。但是可以通过uri进行加载，ImageSelect内部提供了一些方法可以供外部使用，用于适配android 10。
+由于android 10不允许应用直接访问外部文件，所以在android 10及以上的手机，ImageSelect返回的图片链接可能无法直接加载,因为ImageSelector返回的是图片在手机里的地址。但是可以通过uri进行加载，ImageSelector内部提供了一些方法可以供外部使用，用于适配android 10。
 ```
 //是否是android 10及以上
 VersionUtils.isAndroidQ();
@@ -155,11 +155,12 @@ Uri uri = UriUtils.getImageContentUri(Context context, String path);
 
 //通过uri加载图片
  Glide.with(mContext).load(uri).into(ivImage);
+ ivImage.setImageURI(uri);
  // 或者
 Bitmap bitmap = ImageUtil.getBitmapFromUri(Context context, Uri uri);
 ```
 
-***注意：*** 剪切返回的图片的图片链接是放在应用的私有目录的，所以剪切返回的图片可以直接用path加载，不需要转成uri再加载。ImageSelect提供了判断图片链接是否是剪切的图片的方法。
+***注意：*** 剪切返回的图片的图片链接是放在应用的私有目录的，所以剪切返回的图片可以直接用path加载，不需要转成uri再加载。ImageSelector提供了判断图片链接是否是剪切的图片的方法。
 ```
 // 是否是剪切返回的图片
 ImageUtil.isCutImage(mContext, path);
