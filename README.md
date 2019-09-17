@@ -144,6 +144,8 @@ ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的
 兼容android 10的手机请使用1.7.0版本。
 
 由于android 10不允许应用直接访问外部文件，所以在android 10及以上的手机，ImageSelect返回的图片链接可能无法直接加载,因为ImageSelector返回的是图片在手机里的地址。但是可以通过uri进行加载，ImageSelector内部提供了一些方法可以供外部使用，用于适配android 10。
+
+如何在Android 10加载手机本地图片，请看我的[这篇博客](https://juejin.im/post/5d80ef726fb9a06aeb10f223)。
 ```
 //是否是android 10及以上
 VersionUtils.isAndroidQ();
@@ -166,4 +168,4 @@ Bitmap bitmap = ImageUtil.getBitmapFromUri(Context context, Uri uri);
 ImageUtil.isCutImage(mContext, path);
 ```
 
-想要了解ImageSelector的实现思路和核心代码的同学请看这里：[Android 实现一个仿微信的图片选择器](http://blog.csdn.net/u010177022/article/details/70147243)
+想要了解ImageSelector的实现思路和核心代码的同学请看这里：[Android 实现一个仿微信的图片选择器](https://juejin.im/post/5919086244d904006c692abb)
