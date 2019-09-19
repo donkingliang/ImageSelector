@@ -724,7 +724,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
             Uri photoUri = null;
 
             if (VersionUtils.isAndroidQ()) {
-                photoUri = createImagePathUri(getApplicationContext());
+                photoUri = createImagePathUri();
             } else {
                 try {
                     photoFile = createImageFile();
@@ -755,27 +755,23 @@ public class ImageSelectorActivity extends AppCompatActivity {
     /**
      * 创建一条图片地址uri,用于保存拍照后的照片
      *
-     * @param context
      * @return 图片的uri
      */
-    public static Uri createImagePathUri(final Context context) {
-        final Uri[] imageFilePath = {null};
+    public Uri createImagePathUri() {
         String status = Environment.getExternalStorageState();
         SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         long time = System.currentTimeMillis();
         String imageName = timeFormatter.format(new Date(time));
         // ContentValues是我们希望这条记录被创建时包含的数据信息
-        ContentValues values = new ContentValues(3);
+        ContentValues values = new ContentValues(2);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, imageName);
-        values.put(MediaStore.Images.Media.DATE_TAKEN, time);
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
         // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
         if (status.equals(Environment.MEDIA_MOUNTED)) {
-            imageFilePath[0] = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            return getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         } else {
-            imageFilePath[0] = context.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
+            return getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, values);
         }
-        return imageFilePath[0];
     }
 
     private File createImageFile() throws IOException {
