@@ -20,11 +20,13 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:1.6.9'
+	implementation 'com.github.donkingliang:ImageSelector:1.7.0'
 ```
 ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
 **2、配置AndroidManifest.xml**
+
+***注意：*** 1.7.0版本后，不需要再配置FileProvider，ImageSelector内部已经配置了。
 ```xml
 //储存卡的读写权限
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -51,7 +53,7 @@ ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x�
     android:name="com.donkingliang.imageselector.ClipImageActivity"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-<!-- Android 7.0 文件共享配置，必须配置 -->
+<!-- Android 7.0 文件共享配置，1.7.0之前必须配置，1.7.0后不需要 -->
 <provider
     android:name="android.support.v4.content.FileProvider"
     android:authorities="${applicationId}.fileprovider"
@@ -137,4 +139,33 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
 ```
 ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的字符串数组返回的，就算是单选，返回的也是ArrayList数组，只不过这时候ArrayList只有一条数据而已。ArrayList里面的数据就是选中的图片的文件路径。
 
-想要了解ImageSelector的实现思路和核心代码的同学请看这里：[Android 实现一个仿微信的图片选择器](http://blog.csdn.net/u010177022/article/details/70147243)
+**适配android 10**
+
+兼容android 10的手机请使用1.7.0版本。
+
+由于android 10不允许应用直接访问外部文件，所以在android 10及以上的手机，ImageSelect返回的图片链接可能无法直接加载,因为ImageSelector返回的是图片在手机里的地址。但是可以通过uri进行加载，ImageSelector内部提供了一些方法可以供外部使用，用于适配android 10。
+
+如何在Android 10加载手机本地图片，请看我的[这篇博客](https://juejin.im/post/5d80ef726fb9a06aeb10f223)。
+```
+//是否是android 10及以上
+VersionUtils.isAndroidQ();
+
+// android 10可以通过图片uri加载手机本地图片。
+
+//图片链接转uri
+Uri uri = UriUtils.getImageContentUri(Context context, String path);
+
+//通过uri加载图片
+ Glide.with(mContext).load(uri).into(ivImage);
+ ivImage.setImageURI(uri);
+ // 或者
+Bitmap bitmap = ImageUtil.getBitmapFromUri(Context context, Uri uri);
+```
+
+***注意：*** 剪切返回的图片的图片链接是放在应用的私有目录的，所以剪切返回的图片可以直接用path加载，不需要转成uri再加载。ImageSelector提供了判断图片链接是否是剪切的图片的方法。
+```
+// 是否是剪切返回的图片
+ImageUtil.isCutImage(mContext, path);
+```
+
+想要了解ImageSelector的实现思路和核心代码的同学请看这里：[Android 实现一个仿微信的图片选择器](https://juejin.im/post/5919086244d904006c692abb)
