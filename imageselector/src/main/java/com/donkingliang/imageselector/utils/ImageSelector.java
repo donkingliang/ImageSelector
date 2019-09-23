@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
+import com.donkingliang.imageselector.entry.RequestConfig;
 
 import java.util.ArrayList;
 
@@ -27,16 +28,12 @@ public class ImageSelector {
      */
     public static final String IS_CAMERA_IMAGE = "is_camera_image";
 
+    public static final String KEY_CONFIG = "key_config";
+
     //最大的图片选择数
     public static final String MAX_SELECT_COUNT = "max_select_count";
     //是否单选
     public static final String IS_SINGLE = "is_single";
-    //是否点击放大图片查看
-    public static final String IS_VIEW_IMAGE = "is_view_image";
-    //是否使用拍照功能
-    public static final String USE_CAMERA = "is_camera";
-    //原来已选择的图片
-    public static final String SELECTED = "selected";
     //初始位置
     public static final String POSITION = "position";
 
@@ -50,12 +47,11 @@ public class ImageSelector {
 
     public static class ImageSelectorBuilder {
 
-        private boolean isCrop = false;
-        private boolean useCamera = true;
-        private boolean isSingle = false;
-        private boolean isViewImage = true;
-        private int maxSelectCount;
-        private ArrayList<String> selected;
+        private RequestConfig config;
+
+        private ImageSelectorBuilder() {
+            config = new RequestConfig();
+        }
 
         /**
          * 是否使用图片剪切功能。默认false。如果使用了图片剪切功能，相册只能单选。
@@ -64,7 +60,7 @@ public class ImageSelector {
          * @return
          */
         public ImageSelectorBuilder setCrop(boolean isCrop) {
-            this.isCrop = isCrop;
+            config.isCrop = isCrop;
             return this;
         }
 
@@ -75,18 +71,31 @@ public class ImageSelector {
          * @return
          */
         public ImageSelectorBuilder setSingle(boolean isSingle) {
-            this.isSingle = isSingle;
+            config.isSingle = isSingle;
             return this;
         }
 
         /**
-         * 是否点击放大图片查看,，默认为true
+         * 是否可以点击放大图片查看，默认为true
          *
          * @param isViewImage
          * @return
+         * @deprecated 请使用canPreview(boolean canPreview);
          */
+        @Deprecated
         public ImageSelectorBuilder setViewImage(boolean isViewImage) {
-            this.isViewImage = isViewImage;
+            config.canPreview = isViewImage;
+            return this;
+        }
+
+        /**
+         * 是否可以点击预览，默认为true
+         *
+         * @param canPreview
+         * @return
+         */
+        public ImageSelectorBuilder canPreview(boolean canPreview) {
+            config.canPreview = canPreview;
             return this;
         }
 
@@ -97,7 +106,7 @@ public class ImageSelector {
          * @return
          */
         public ImageSelectorBuilder useCamera(boolean useCamera) {
-            this.useCamera = useCamera;
+            config.useCamera = useCamera;
             return this;
         }
 
@@ -108,7 +117,7 @@ public class ImageSelector {
          * @return
          */
         public ImageSelectorBuilder setMaxSelectCount(int maxSelectCount) {
-            this.maxSelectCount = maxSelectCount;
+            config.maxSelectCount = maxSelectCount;
             return this;
         }
 
@@ -120,7 +129,7 @@ public class ImageSelector {
          * @return
          */
         public ImageSelectorBuilder setSelected(ArrayList<String> selected) {
-            this.selected = selected;
+            config.selected = selected;
             return this;
         }
 
@@ -131,11 +140,11 @@ public class ImageSelector {
          * @param requestCode
          */
         public void start(Activity activity, int requestCode) {
-            if (isCrop) {
-                ClipImageActivity.openActivity(activity, requestCode, isViewImage, useCamera, selected);
+            config.requestCode = requestCode;
+            if (config.isCrop) {
+                ClipImageActivity.openActivity(activity, requestCode, config);
             } else {
-                ImageSelectorActivity.openActivity(activity, requestCode, isSingle, isViewImage,
-                        useCamera, maxSelectCount, selected);
+                ImageSelectorActivity.openActivity(activity, requestCode, config);
             }
         }
 
@@ -146,11 +155,11 @@ public class ImageSelector {
          * @param requestCode
          */
         public void start(Fragment fragment, int requestCode) {
-            if (isCrop) {
-                ClipImageActivity.openActivity(fragment, requestCode, isViewImage, useCamera, selected);
+            config.requestCode = requestCode;
+            if (config.isCrop) {
+                ClipImageActivity.openActivity(fragment, requestCode, config);
             } else {
-                ImageSelectorActivity.openActivity(fragment, requestCode, isSingle, isViewImage,
-                        useCamera, maxSelectCount, selected);
+                ImageSelectorActivity.openActivity(fragment, requestCode, config);
             }
         }
 
@@ -161,11 +170,11 @@ public class ImageSelector {
          * @param requestCode
          */
         public void start(android.app.Fragment fragment, int requestCode) {
-            if (isCrop) {
-                ClipImageActivity.openActivity(fragment, requestCode, isViewImage, useCamera, selected);
+            config.requestCode = requestCode;
+            if (config.isCrop) {
+                ClipImageActivity.openActivity(fragment, requestCode, config);
             } else {
-                ImageSelectorActivity.openActivity(fragment, requestCode, isSingle, isViewImage,
-                        useCamera, maxSelectCount, selected);
+                ImageSelectorActivity.openActivity(fragment, requestCode, config);
             }
         }
     }

@@ -105,13 +105,13 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        vpImage = (MyViewPager) findViewById(R.id.vp_image);
-        tvIndicator = (TextView) findViewById(R.id.tv_indicator);
-        tvConfirm = (TextView) findViewById(R.id.tv_confirm);
-        btnConfirm = (FrameLayout) findViewById(R.id.btn_confirm);
-        tvSelect = (TextView) findViewById(R.id.tv_select);
-        rlTopBar = (RelativeLayout) findViewById(R.id.rl_top_bar);
-        rlBottomBar = (RelativeLayout) findViewById(R.id.rl_bottom_bar);
+        vpImage = findViewById(R.id.vp_image);
+        tvIndicator = findViewById(R.id.tv_indicator);
+        tvConfirm = findViewById(R.id.tv_confirm);
+        btnConfirm = findViewById(R.id.btn_confirm);
+        tvSelect = findViewById(R.id.tv_select);
+        rlTopBar = findViewById(R.id.rl_top_bar);
+        rlBottomBar = findViewById(R.id.rl_bottom_bar);
 
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlTopBar.getLayoutParams();
         lp.topMargin = getStatusBarHeight(this);

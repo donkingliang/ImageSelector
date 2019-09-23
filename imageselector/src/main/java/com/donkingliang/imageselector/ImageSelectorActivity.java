@@ -41,6 +41,7 @@ import com.donkingliang.imageselector.adapter.FolderAdapter;
 import com.donkingliang.imageselector.adapter.ImageAdapter;
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
+import com.donkingliang.imageselector.entry.RequestConfig;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
@@ -83,7 +84,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private boolean isShowTime;
     private boolean isInitFolder;
     private boolean isSingle;
-    private boolean isViewImage = true;
+    private boolean canPreview = true;
     private int mMaxCount;
 
     private boolean useCamera = true;
@@ -105,18 +106,11 @@ public class ImageSelectorActivity extends AppCompatActivity {
      *
      * @param activity
      * @param requestCode
-     * @param isSingle       是否单选
-     * @param isViewImage    是否点击放大图片查看
-     * @param useCamera      是否使用拍照功能
-     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
-     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
-     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     * @param config
      */
-    public static void openActivity(Activity activity, int requestCode,
-                                    boolean isSingle, boolean isViewImage, boolean useCamera,
-                                    int maxSelectCount, ArrayList<String> selected) {
+    public static void openActivity(Activity activity, int requestCode, RequestConfig config) {
         Intent intent = new Intent(activity, ImageSelectorActivity.class);
-        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -125,18 +119,11 @@ public class ImageSelectorActivity extends AppCompatActivity {
      *
      * @param fragment
      * @param requestCode
-     * @param isSingle       是否单选
-     * @param isViewImage    是否点击放大图片查看
-     * @param useCamera      是否使用拍照功能
-     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
-     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
-     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     * @param config
      */
-    public static void openActivity(Fragment fragment, int requestCode,
-                                    boolean isSingle, boolean isViewImage, boolean useCamera,
-                                    int maxSelectCount, ArrayList<String> selected) {
-        Intent intent = new Intent(fragment.getContext(), ImageSelectorActivity.class);
-        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
+    public static void openActivity(Fragment fragment, int requestCode, RequestConfig config) {
+        Intent intent = new Intent(fragment.getActivity(), ImageSelectorActivity.class);
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
         fragment.startActivityForResult(intent, requestCode);
     }
 
@@ -145,30 +132,12 @@ public class ImageSelectorActivity extends AppCompatActivity {
      *
      * @param fragment
      * @param requestCode
-     * @param isSingle       是否单选
-     * @param isViewImage    是否点击放大图片查看
-     * @param useCamera      是否使用拍照功能
-     * @param maxSelectCount 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
-     * @param selected       接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，现在重新打开
-     *                       选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
+     * @param config
      */
-    public static void openActivity(android.app.Fragment fragment, int requestCode,
-                                    boolean isSingle, boolean isViewImage, boolean useCamera,
-                                    int maxSelectCount, ArrayList<String> selected) {
+    public static void openActivity(android.app.Fragment fragment, int requestCode, RequestConfig config) {
         Intent intent = new Intent(fragment.getActivity(), ImageSelectorActivity.class);
-        intent.putExtras(dataPackages(isSingle, isViewImage, useCamera, maxSelectCount, selected));
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
         fragment.startActivityForResult(intent, requestCode);
-    }
-
-    public static Bundle dataPackages(boolean isSingle, boolean isViewImage, boolean useCamera,
-                                      int maxSelectCount, ArrayList<String> selected) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ImageSelector.IS_SINGLE, isSingle);
-        bundle.putBoolean(ImageSelector.IS_VIEW_IMAGE, isViewImage);
-        bundle.putBoolean(ImageSelector.USE_CAMERA, useCamera);
-        bundle.putInt(ImageSelector.MAX_SELECT_COUNT, maxSelectCount);
-        bundle.putStringArrayList(ImageSelector.SELECTED, selected);
-        return bundle;
     }
 
     @Override
@@ -177,11 +146,12 @@ public class ImageSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_select);
 
         Intent intent = getIntent();
-        mMaxCount = intent.getIntExtra(ImageSelector.MAX_SELECT_COUNT, 0);
-        isSingle = intent.getBooleanExtra(ImageSelector.IS_SINGLE, false);
-        isViewImage = intent.getBooleanExtra(ImageSelector.IS_VIEW_IMAGE, true);
-        useCamera = intent.getBooleanExtra(ImageSelector.USE_CAMERA, true);
-        mSelectedImages = intent.getStringArrayListExtra(ImageSelector.SELECTED);
+        RequestConfig config = intent.getParcelableExtra(ImageSelector.KEY_CONFIG);
+        mMaxCount = config.maxSelectCount;
+        isSingle = config.isSingle;
+        canPreview = config.canPreview;
+        useCamera = config.useCamera;
+        mSelectedImages = config.selected;
 
         setStatusBarColor();
         initView();
@@ -204,14 +174,14 @@ public class ImageSelectorActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        rvImage = (RecyclerView) findViewById(R.id.rv_image);
-        rvFolder = (RecyclerView) findViewById(R.id.rv_folder);
-        tvConfirm = (TextView) findViewById(R.id.tv_confirm);
-        tvPreview = (TextView) findViewById(R.id.tv_preview);
-        btnConfirm = (FrameLayout) findViewById(R.id.btn_confirm);
-        btnPreview = (FrameLayout) findViewById(R.id.btn_preview);
-        tvFolderName = (TextView) findViewById(R.id.tv_folder_name);
-        tvTime = (TextView) findViewById(R.id.tv_time);
+        rvImage = findViewById(R.id.rv_image);
+        rvFolder = findViewById(R.id.rv_folder);
+        tvConfirm = findViewById(R.id.tv_confirm);
+        tvPreview = findViewById(R.id.tv_preview);
+        btnConfirm = findViewById(R.id.btn_confirm);
+        btnPreview = findViewById(R.id.btn_preview);
+        tvFolderName = findViewById(R.id.tv_folder_name);
+        tvTime = findViewById(R.id.tv_time);
         masking = findViewById(R.id.masking);
     }
 
@@ -287,7 +257,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         }
 
         rvImage.setLayoutManager(mLayoutManager);
-        mAdapter = new ImageAdapter(this, mMaxCount, isSingle, isViewImage);
+        mAdapter = new ImageAdapter(this, mMaxCount, isSingle, canPreview);
         rvImage.setAdapter(mAdapter);
         ((SimpleItemAnimator) rvImage.getItemAnimator()).setSupportsChangeAnimations(false);
         if (mFolders != null && !mFolders.isEmpty()) {

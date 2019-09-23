@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(true)  //设置是否单选
-                        .setViewImage(true) //是否点击放大图片查看,，默认为true
+                        .canPreview(true) //是否点击放大图片查看,，默认为true
                         .start(this, REQUEST_CODE); // 打开相册
                 break;
 
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
-                        .setViewImage(true) //是否点击放大图片查看,，默认为true
+                        .canPreview(true) //是否点击放大图片查看,，默认为true
                         .setMaxSelectCount(9) // 图片的最大选择数量，小于等于0时，不限数量。
                         .start(this, REQUEST_CODE); // 打开相册
                 break;
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
-                        .setViewImage(true) //是否点击放大图片查看,，默认为true
+                        .canPreview(true) //是否点击放大图片查看,，默认为true
                         .setMaxSelectCount(0) // 图片的最大选择数量，小于等于0时，不限数量。
                         .start(this, REQUEST_CODE); // 打开相册
                 break;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         .useCamera(true) // 设置是否使用拍照
                         .setCrop(true)  // 设置是否使用图片剪切功能。
                         .setSingle(true)  //设置是否单选
-                        .setViewImage(true) //是否点击放大图片查看,，默认为true
+                        .canPreview(true) //是否点击放大图片查看,，默认为true
                         .start(this, REQUEST_CODE); // 打开相册
                 break;
         }

@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
+import com.donkingliang.imageselector.entry.RequestConfig;
 import com.donkingliang.imageselector.utils.ImageSelector;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.StringUtils;
@@ -39,13 +40,12 @@ public class ClipImageActivity extends Activity {
         setContentView(R.layout.activity_clip_image);
 
         Intent intent = getIntent();
-        mRequestCode = intent.getIntExtra("requestCode", 0);
-
+        RequestConfig config = intent.getParcelableExtra(ImageSelector.KEY_CONFIG);
+        mRequestCode = config.requestCode;
+        config.isSingle = true;
+        config.maxSelectCount = 0;
         setStatusBarColor();
-        ImageSelectorActivity.openActivity(this, mRequestCode, true,
-                intent.getBooleanExtra(ImageSelector.IS_VIEW_IMAGE, true),
-                intent.getBooleanExtra(ImageSelector.USE_CAMERA, true), 0,
-                intent.getStringArrayListExtra(ImageSelector.SELECTED));
+        ImageSelectorActivity.openActivity(this, mRequestCode, config);
         initView();
     }
 
@@ -61,9 +61,9 @@ public class ClipImageActivity extends Activity {
     }
 
     private void initView() {
-        imageView = (ClipImageView) findViewById(R.id.process_img);
-        btnConfirm = (FrameLayout) findViewById(R.id.btn_confirm);
-        btnBack = (FrameLayout) findViewById(R.id.btn_back);
+        imageView = findViewById(R.id.process_img);
+        btnConfirm = findViewById(R.id.btn_confirm);
+        btnBack = findViewById(R.id.btn_back);
 
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,34 +121,42 @@ public class ClipImageActivity extends Activity {
         finish();
     }
 
-    public static void openActivity(Activity context, int requestCode, boolean isViewImage,
-                                    boolean useCamera, ArrayList<String> selected) {
-        Intent intent = new Intent(context, ClipImageActivity.class);
-        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
-        context.startActivityForResult(intent, requestCode);
+    /**
+     * 启动图片选择器
+     *
+     * @param activity
+     * @param requestCode
+     * @param config
+     */
+    public static void openActivity(Activity activity, int requestCode, RequestConfig config) {
+        Intent intent = new Intent(activity, ClipImageActivity.class);
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
+        activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void openActivity(Fragment fragment, int requestCode, boolean isViewImage,
-                                    boolean useCamera, ArrayList<String> selected) {
-        Intent intent = new Intent(fragment.getContext(), ClipImageActivity.class);
-        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
-        fragment.startActivityForResult(intent, requestCode);
-    }
-
-    public static void openActivity(android.app.Fragment fragment, int requestCode, boolean isViewImage,
-                                    boolean useCamera, ArrayList<String> selected) {
+    /**
+     * 启动图片选择器
+     *
+     * @param fragment
+     * @param requestCode
+     * @param config
+     */
+    public static void openActivity(Fragment fragment, int requestCode, RequestConfig config) {
         Intent intent = new Intent(fragment.getActivity(), ClipImageActivity.class);
-        intent.putExtras(dataPackages(requestCode, isViewImage, useCamera, selected));
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static Bundle dataPackages(int requestCode, boolean isViewImage, boolean useCamera,
-                                      ArrayList<String> selected) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("requestCode", requestCode);
-        bundle.putBoolean(ImageSelector.IS_VIEW_IMAGE, isViewImage);
-        bundle.putBoolean(ImageSelector.USE_CAMERA, useCamera);
-        bundle.putStringArrayList(ImageSelector.SELECTED, selected);
-        return bundle;
+    /**
+     * 启动图片选择器
+     *
+     * @param fragment
+     * @param requestCode
+     * @param config
+     */
+    public static void openActivity(android.app.Fragment fragment, int requestCode, RequestConfig config) {
+        Intent intent = new Intent(fragment.getActivity(), ClipImageActivity.class);
+        intent.putExtra(ImageSelector.KEY_CONFIG, config);
+        fragment.startActivityForResult(intent, requestCode);
     }
 }
