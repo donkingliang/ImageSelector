@@ -7,12 +7,10 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -46,9 +44,6 @@ import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
-import com.donkingliang.imageselector.utils.ImageUtil;
-import com.donkingliang.imageselector.utils.MD5Utils;
-import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.utils.UriUtils;
 import com.donkingliang.imageselector.utils.VersionUtils;
 
@@ -367,18 +362,18 @@ public class ImageSelectorActivity extends AppCompatActivity {
         if (count == 0) {
             btnConfirm.setEnabled(false);
             btnPreview.setEnabled(false);
-            tvConfirm.setText("确定");
-            tvPreview.setText("预览");
+            tvConfirm.setText(R.string.selector_send);
+            tvPreview.setText(R.string.selector_preview);
         } else {
             btnConfirm.setEnabled(true);
             btnPreview.setEnabled(true);
-            tvPreview.setText("预览(" + count + ")");
+            tvPreview.setText(getString(R.string.selector_preview) + "(" + count + ")");
             if (isSingle) {
-                tvConfirm.setText("确定");
+                tvConfirm.setText(R.string.selector_send);
             } else if (mMaxCount > 0) {
-                tvConfirm.setText("确定(" + count + "/" + mMaxCount + ")");
+                tvConfirm.setText(getString(R.string.selector_send) + "(" + count + "/" + mMaxCount + ")");
             } else {
-                tvConfirm.setText("确定(" + count + ")");
+                tvConfirm.setText(getString(R.string.selector_send) + "(" + count + ")");
             }
         }
     }
@@ -450,7 +445,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         int firstVisibleItem = getFirstVisibleItem();
         Image image = mAdapter.getFirstVisibleImage(firstVisibleItem);
         if (image != null) {
-            String time = DateUtils.getImageTime(image.getTime() * 1000);
+            String time = DateUtils.getImageTime(this, image.getTime() * 1000);
             tvTime.setText(time);
             showTime();
             mHideHandler.removeCallbacks(mHide);
@@ -667,15 +662,15 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private void showExceptionDialog(final boolean applyLoad) {
         new AlertDialog.Builder(this)
                 .setCancelable(false)
-                .setTitle("提示")
-                .setMessage("该相册需要赋予访问存储和拍照的权限，请到“设置”>“应用”>“权限”中配置权限。")
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.selector_hint)
+                .setMessage(R.string.selector_permissions_hint)
+                .setNegativeButton(R.string.selector_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                         finish();
                     }
-                }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                }).setPositiveButton(R.string.selector_confirm, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

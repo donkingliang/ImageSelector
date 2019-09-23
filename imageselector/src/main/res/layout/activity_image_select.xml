@@ -40,7 +40,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/btn_back"
-            android:text="@string/image"
+            android:text="@string/selector_image"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -64,7 +64,7 @@
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:paddingTop="5dp"
-                android:text="@string/confirm"
+                android:text="@string/selector_send"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
 
@@ -176,7 +176,7 @@
                 android:minWidth="70dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
-                android:text="@string/preview"
+                android:text="@string/selector_preview"
                 android:textColor="@android:color/white"
                 android:textSize="18sp" />
 

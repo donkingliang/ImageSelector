@@ -46,12 +46,12 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.ViewHolder
         holder.tvFolderName.setText(folder.getName());
         holder.ivSelect.setVisibility(mSelectItem == position ? View.VISIBLE : View.GONE);
         if (images != null && !images.isEmpty()) {
-            holder.tvFolderSize.setText(images.size() + "张");
+            holder.tvFolderSize.setText(mContext.getString(R.string.selector_image_num,images.size()));
             Glide.with(mContext).load(isAndroidQ ? images.get(0).getUri() : images.get(0).getPath())
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(holder.ivImage);
         } else {
-            holder.tvFolderSize.setText("0张");
+            holder.tvFolderSize.setText(mContext.getString(R.string.selector_image_num,0));
             holder.ivImage.setImageBitmap(null);
         }
 

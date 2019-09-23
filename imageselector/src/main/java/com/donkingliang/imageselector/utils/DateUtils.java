@@ -1,22 +1,26 @@
 package com.donkingliang.imageselector.utils;
 
+import android.content.Context;
+
+import com.donkingliang.imageselector.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtils {
 
-    public static String getImageTime(long time) {
+    public static String getImageTime(Context context,long time) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         Calendar imageTime = Calendar.getInstance();
         imageTime.setTimeInMillis(time);
         if (sameDay(calendar, imageTime)) {
-            return "今天";
+            return context.getString(R.string.selector_this_today);
         } else if (sameWeek(calendar, imageTime)) {
-            return "本周";
+            return  context.getString(R.string.selector_this_week);
         } else if (sameMonth(calendar, imageTime)) {
-            return "本月";
+            return  context.getString(R.string.selector_this_month);
         } else {
             Date date = new Date(time);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM");

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">imageselector</string>
+    <string name="selector_image">Photos</string>
+    <string name="selector_send">Send</string>
+    <string name="selector_preview">Preview</string>
+    <string name="selector_select">Select</string>
+    <string name="selector_image_num">%d </string>
+    <string name="selector_all_image">All Photos</string>
+    <string name="selector_this_today">This today</string>
+    <string name="selector_this_week">This week</string>
+    <string name="selector_this_month">This month</string>
+    <string name="selector_confirm">Confirm</string>
+    <string name="selector_cancel">Cancel</string>
+    <string name="selector_hint">Hint</string>
+    <string name="selector_permissions_hint">This album needs to be granted access to storage and photos, please go to Settings > App > Permissions to configure permissions.</string>
+</resources>

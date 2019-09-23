@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Folder;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageUtil;
@@ -83,7 +84,7 @@ public class ImageModel {
                     mCursor.close();
                 }
                 Collections.reverse(images);
-                callback.onSuccess(splitFolder(images));
+                callback.onSuccess(splitFolder(context,images));
             }
         }).start();
     }
@@ -109,9 +110,9 @@ public class ImageModel {
      * @param images
      * @return
      */
-    private static ArrayList<Folder> splitFolder(ArrayList<Image> images) {
+    private static ArrayList<Folder> splitFolder(Context context,ArrayList<Image> images) {
         ArrayList<Folder> folders = new ArrayList<>();
-        folders.add(new Folder("全部图片", images));
+        folders.add(new Folder(context.getString(R.string.selector_all_image), images));
 
         if (images != null && !images.isEmpty()) {
             int size = images.size();

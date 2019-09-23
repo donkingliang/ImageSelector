@@ -296,15 +296,15 @@ public class PreviewActivity extends AppCompatActivity {
     private void setSelectImageCount(int count) {
         if (count == 0) {
             btnConfirm.setEnabled(false);
-            tvConfirm.setText("确定");
+            tvConfirm.setText(R.string.selector_send);
         } else {
             btnConfirm.setEnabled(true);
             if (isSingle) {
-                tvConfirm.setText("确定");
+                tvConfirm.setText(R.string.selector_send);
             } else if (mMaxCount > 0) {
-                tvConfirm.setText("确定(" + count + "/" + mMaxCount + ")");
+                tvConfirm.setText(getString(R.string.selector_send) + "(" + count + "/" + mMaxCount + ")");
             } else {
-                tvConfirm.setText("确定(" + count + ")");
+                tvConfirm.setText(getString(R.string.selector_send) + "(" + count + ")");
             }
         }
     }
