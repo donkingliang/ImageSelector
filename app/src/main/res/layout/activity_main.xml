@@ -9,7 +9,7 @@
         android:id="@+id/btn_single"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:text="单选" />
 
     <Button
@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/btn_single"
+        android:layout_margin="5dp"
         android:layout_toRightOf="@+id/btn_single"
         android:text="多选(最多9张)" />
 
@@ -24,23 +25,42 @@
         android:id="@+id/btn_unlimited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/btn_single"
-        android:layout_below="@+id/btn_single"
+        android:layout_alignTop="@+id/btn_single"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/btn_limit"
         android:text="多选(不限数量)" />
 
     <Button
         android:id="@+id/btn_clip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_unlimited"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/btn_unlimited"
+        android:layout_below="@+id/btn_single"
+        android:layout_alignLeft="@+id/btn_single"
+        android:layout_marginLeft="5dp"
         android:text="单选并剪裁" />
+
+    <Button
+        android:id="@+id/btn_only_take"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_clip"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/btn_clip"
+        android:text="仅拍照" />
+
+    <Button
+        android:id="@+id/btn_take_and_clip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/btn_clip"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/btn_only_take"
+        android:text="拍照并剪裁" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/btn_unlimited"
+        android:layout_below="@+id/btn_clip"
         android:layout_marginTop="10dp" />
 </RelativeLayout>

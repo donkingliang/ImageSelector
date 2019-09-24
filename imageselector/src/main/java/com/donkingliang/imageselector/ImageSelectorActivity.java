@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -73,6 +72,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private ArrayList<Folder> mFolders;
     private Folder mFolder;
     private boolean applyLoadImage = false;
+    private boolean applyCamera = false;
     private static final int PERMISSION_WRITE_EXTERNAL_REQUEST_CODE = 0x00000011;
     private static final int PERMISSION_CAMERA_REQUEST_CODE = 0x00000012;
 
@@ -88,6 +88,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private int mMaxCount;
 
     private boolean useCamera = true;
+    private boolean onlyTakePhoto = false;
 
     private Handler mHideHandler = new Handler();
     private Runnable mHide = new Runnable() {
@@ -143,8 +144,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_select);
-
         Intent intent = getIntent();
         RequestConfig config = intent.getParcelableExtra(ImageSelector.KEY_CONFIG);
         mMaxCount = config.maxSelectCount;
@@ -152,21 +151,27 @@ public class ImageSelectorActivity extends AppCompatActivity {
         canPreview = config.canPreview;
         useCamera = config.useCamera;
         mSelectedImages = config.selected;
-
-        setStatusBarColor();
-        initView();
-        initListener();
-        initImageList();
-        checkPermissionAndLoadImages();
-        hideFolderList();
-        setSelectImageCount(0);
+        onlyTakePhoto = config.onlyTakePhoto;
+        if (onlyTakePhoto) {
+            // 仅拍照
+            checkPermissionAndCamera();
+        } else {
+            setContentView(R.layout.activity_image_select);
+            setStatusBarColor();
+            initView();
+            initListener();
+            initImageList();
+            checkPermissionAndLoadImages();
+            hideFolderList();
+            setSelectImageCount(0);
+        }
     }
 
     /**
      * 修改状态栏颜色
      */
     private void setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VersionUtils.isAndroidL()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#373c3d"));
@@ -503,6 +508,10 @@ public class ImageSelectorActivity extends AppCompatActivity {
             applyLoadImage = false;
             checkPermissionAndLoadImages();
         }
+        if (applyCamera) {
+            applyCamera = false;
+            checkPermissionAndCamera();
+        }
     }
 
     /**
@@ -535,6 +544,10 @@ public class ImageSelectorActivity extends AppCompatActivity {
                     images.add(mCameraImagePath);
                 }
                 saveImageAndFinish(images, true);
+            } else {
+                if (onlyTakePhoto) {
+                    finish();
+                }
             }
         }
     }
@@ -568,7 +581,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 //            Toast.makeText(this, "没有图片", Toast.LENGTH_LONG).show();
             return;
         }
-        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(getApplication(),
+        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (hasWriteExternalPermission == PackageManager.PERMISSION_GRANTED) {
             //有权限，加载图片。
@@ -584,15 +597,17 @@ public class ImageSelectorActivity extends AppCompatActivity {
      * 检查权限并拍照。
      */
     private void checkPermissionAndCamera() {
-        int hasCameraPermission = ContextCompat.checkSelfPermission(getApplication(),
-                Manifest.permission.CAMERA);
-        if (hasCameraPermission == PackageManager.PERMISSION_GRANTED) {
+        int hasCameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasCameraPermission == PackageManager.PERMISSION_GRANTED
+                && hasWriteExternalPermission == PackageManager.PERMISSION_GRANTED) {
             //有调起相机拍照。
             openCamera();
         } else {
             //没有权限，申请权限。
             ActivityCompat.requestPermissions(ImageSelectorActivity.this,
-                    new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_REQUEST_CODE);
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CAMERA_REQUEST_CODE);
         }
     }
 
@@ -615,8 +630,9 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 showExceptionDialog(true);
             }
         } else if (requestCode == PERMISSION_CAMERA_REQUEST_CODE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                 //允许权限，有调起相机拍照。
                 openCamera();
             } else {
@@ -647,6 +663,8 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 startAppSettings();
                 if (applyLoad) {
                     applyLoadImage = true;
+                } else {
+                    applyCamera = true;
                 }
             }
         }).show();
@@ -699,7 +717,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
 
                 if (photoFile != null) {
                     mCameraImagePath = photoFile.getAbsolutePath();
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    if (VersionUtils.isAndroidN()) {
                         //通过FileProvider创建一个content类型的Uri
                         photoUri = FileProvider.getUriForFile(this, getPackageName() + ".imageSelectorProvider", photoFile);
                     } else {

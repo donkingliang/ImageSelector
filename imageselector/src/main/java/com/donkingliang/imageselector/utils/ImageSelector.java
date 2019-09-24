@@ -110,6 +110,11 @@ public class ImageSelector {
             return this;
         }
 
+        public ImageSelectorBuilder onlyTakePhoto(boolean onlyTakePhoto){
+            config.onlyTakePhoto = onlyTakePhoto;
+            return this;
+        }
+
         /**
          * 图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
          *
@@ -141,6 +146,10 @@ public class ImageSelector {
          */
         public void start(Activity activity, int requestCode) {
             config.requestCode = requestCode;
+            // 仅拍照，useCamera必须为true
+            if (config.onlyTakePhoto){
+                config.useCamera = true;
+            }
             if (config.isCrop) {
                 ClipImageActivity.openActivity(activity, requestCode, config);
             } else {
@@ -156,6 +165,10 @@ public class ImageSelector {
          */
         public void start(Fragment fragment, int requestCode) {
             config.requestCode = requestCode;
+            // 仅拍照，useCamera必须为true
+            if (config.onlyTakePhoto){
+                config.useCamera = true;
+            }
             if (config.isCrop) {
                 ClipImageActivity.openActivity(fragment, requestCode, config);
             } else {
@@ -171,6 +184,10 @@ public class ImageSelector {
          */
         public void start(android.app.Fragment fragment, int requestCode) {
             config.requestCode = requestCode;
+            // 仅拍照，useCamera必须为true
+            if (config.onlyTakePhoto){
+                config.useCamera = true;
+            }
             if (config.isCrop) {
                 ClipImageActivity.openActivity(fragment, requestCode, config);
             } else {

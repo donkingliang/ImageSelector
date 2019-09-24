@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_limit).setOnClickListener(this);
         findViewById(R.id.btn_unlimited).setOnClickListener(this);
         findViewById(R.id.btn_clip).setOnClickListener(this);
+        findViewById(R.id.btn_only_take).setOnClickListener(this);
+        findViewById(R.id.btn_take_and_clip).setOnClickListener(this);
     }
 
     @Override
@@ -52,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_single:
                 //单选
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, true, 0);
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(true)  //设置是否单选
@@ -62,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_limit:
                 //多选(最多9张)
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9);
-//                ImageSelector.builder().setSingle(true).start(this,REQUEST_CODE);
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 9, mAdapter.getImages()); // 把已选的传入。
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
@@ -75,12 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_unlimited:
                 //多选(不限数量)
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE);
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, mAdapter.getImages()); // 把已选的传入。
-                //或者
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0);
-//                ImageSelectorUtils.openPhoto(MainActivity.this, REQUEST_CODE, false, 0, mAdapter.getImages()); // 把已选的传入。
-
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setSingle(false)  //设置是否单选
@@ -91,13 +83,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.btn_clip:
                 //单选并剪裁
-//                ImageSelectorUtils.openPhotoAndClip(MainActivity.this, REQUEST_CODE);
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setCrop(true)  // 设置是否使用图片剪切功能。
                         .setSingle(true)  //设置是否单选
                         .canPreview(true) //是否点击放大图片查看,，默认为true
                         .start(this, REQUEST_CODE); // 打开相册
+                break;
+
+            case R.id.btn_only_take:
+                //仅拍照
+                ImageSelector.builder()
+                        .onlyTakePhoto(true)  // 仅拍照，不打开相册
+                        .start(this, REQUEST_CODE);
+                break;
+
+            case R.id.btn_take_and_clip:
+                //拍照并剪裁
+                ImageSelector.builder()
+                        .setCrop(true) // 设置是否使用图片剪切功能。
+                        .onlyTakePhoto(true)  // 仅拍照，不打开相册
+                        .start(this, REQUEST_CODE);
                 break;
         }
     }

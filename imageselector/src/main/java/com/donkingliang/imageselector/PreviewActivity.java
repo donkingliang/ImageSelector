@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.donkingliang.imageselector.adapter.ImagePagerAdapter;
 import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.VersionUtils;
 import com.donkingliang.imageselector.view.MyViewPager;
 
 import java.util.ArrayList;
@@ -74,6 +75,14 @@ public class PreviewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+
+        if (VersionUtils.isAndroidP()) {
+            //设置页面全屏显示
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            //设置页面延伸到刘海区显示
+            getWindow().setAttributes(lp);
+        }
 
         setStatusBarVisible(true);
         mImages = tempImages;
@@ -177,7 +186,7 @@ public class PreviewActivity extends AppCompatActivity {
      * 修改状态栏颜色
      */
     private void setStatusBarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VersionUtils.isAndroidL()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.parseColor("#373c3d"));
@@ -205,11 +214,14 @@ public class PreviewActivity extends AppCompatActivity {
      * @param show
      */
     private void setStatusBarVisible(boolean show) {
-        if (show) {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        } else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            if (show) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            } else {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+            }
         }
     }
 
