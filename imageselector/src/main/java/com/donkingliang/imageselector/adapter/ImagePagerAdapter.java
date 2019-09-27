@@ -75,19 +75,19 @@ public class ImagePagerAdapter extends PagerAdapter {
         container.addView(currentView);
         if (image.isGif()) {
             currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath())
+            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath()).override(720,1080)
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(currentView);
         } else {
             Glide.with(mContext).asBitmap()
                     .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
-                    .load(isAndroidQ ? image.getUri() : image.getPath()).into(new SimpleTarget<Bitmap>() {
+                    .load(isAndroidQ ? image.getUri() : image.getPath()).into(new SimpleTarget<Bitmap>(720,1080) {
                 @Override
                 public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                     int bw = resource.getWidth();
                     int bh = resource.getHeight();
-                    if (bw > 8192 || bh > 8192) {
-                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 8192, 8192);
+                    if (bw > 4096 || bh > 4096) {
+                        Bitmap bitmap = ImageUtil.zoomBitmap(resource, 4096, 4096);
                         setBitmap(currentView, bitmap);
                     } else {
                         setBitmap(currentView, resource);
