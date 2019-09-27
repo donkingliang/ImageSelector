@@ -20,9 +20,8 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:1.8.0'
+	implementation 'com.github.donkingliang:ImageSelector:2.0.0'
 ```
-ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
 **2、配置AndroidManifest.xml**
 
@@ -181,5 +180,33 @@ Bitmap bitmap = ImageUtil.getBitmapFromUri(Context context, Uri uri);
 // 是否是剪切返回的图片
 ImageUtil.isCutImage(mContext, path);
 ```
+
+**版本节点**
+
+这里记录的是重要的版本更新节点，全部的版本及更新内容请看[这里](https://github.com/donkingliang/ImageSelector/releases)。
+
+***2.0.0版本***
+
+迁移androidx。没有使用androidx的项目可以使用1.8.1版本。
+
+***1.8.0版本***
+
+1、添加直接打开相机拍照功能。
+
+2、优化图片预览页，适配刘海屏。
+
+***1.7.0版本***
+
+1、适配android 10。
+
+2、添加自定义FileProvider，从1.7.0开始，使用者不需要再配置FileProvider。
+
+***1.5.0版本***
+
+1、更新Glide版本到4.x。
+
+2、修改targetSdkVersion为27。
+
+ImageSelector从1.5.0版本开始使用了Glide 4.x的版本，由于Glide 3.x版本和4.x版本在使用上有所差异，如果你的项目使用了Glide 3.x版本，而又不想升级到4.x,那么你也可以使用ImageSelector:1.4.0版本，它和新的版本在使用和功能上都会有所差异。[ImageSelector 1.4.0](https://github.com/donkingliang/ImageSelector/blob/master/README1.4.0.md)
 
 想要了解ImageSelector的实现思路和核心代码的同学请看这里：[Android 实现一个仿微信的图片选择器](https://juejin.im/post/5919086244d904006c692abb)
