@@ -31,6 +31,7 @@ public class ClipImageActivity extends Activity {
     private ClipImageView imageView;
     private int mRequestCode;
     private boolean isCameraImage;
+    private float cropRatio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class ClipImageActivity extends Activity {
         mRequestCode = config.requestCode;
         config.isSingle = true;
         config.maxSelectCount = 0;
+        cropRatio = config.cropRatio;
         setStatusBarColor();
         ImageSelectorActivity.openActivity(this, mRequestCode, config);
         initView();
@@ -79,6 +81,8 @@ public class ClipImageActivity extends Activity {
                 finish();
             }
         });
+
+        imageView.setRatio(cropRatio);
     }
 
     @Override

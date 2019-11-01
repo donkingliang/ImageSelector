@@ -65,6 +65,17 @@ public class ImageSelector {
         }
 
         /**
+         *
+         * 图片剪切的宽高比，宽固定为手机屏幕的宽。
+         * @param ratio
+         * @return
+         */
+        public ImageSelectorBuilder setCropRatio(float ratio){
+            config.cropRatio = ratio;
+            return this;
+        }
+
+        /**
          * 是否单选
          *
          * @param isSingle

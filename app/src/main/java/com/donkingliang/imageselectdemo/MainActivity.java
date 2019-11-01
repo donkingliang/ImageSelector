@@ -2,6 +2,7 @@ package com.donkingliang.imageselectdemo;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ImageSelector.builder()
                         .useCamera(true) // 设置是否使用拍照
                         .setCrop(true)  // 设置是否使用图片剪切功能。
+                        .setCropRatio(1.0f) // 图片剪切的宽高比,默认1.0f。宽固定为手机屏幕的宽。
                         .setSingle(true)  //设置是否单选
                         .canPreview(true) //是否点击放大图片查看,，默认为true
                         .start(this, REQUEST_CODE); // 打开相册
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //拍照并剪裁
                 ImageSelector.builder()
                         .setCrop(true) // 设置是否使用图片剪切功能。
+                        .setCropRatio(1.0f) // 图片剪切的宽高比,默认1.0f。宽固定为手机屏幕的宽。
                         .onlyTakePhoto(true)  // 仅拍照，不打开相册
                         .start(this, REQUEST_CODE);
                 break;
