@@ -19,7 +19,6 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 
 public class ClipImageView extends AppCompatImageView {
-
     private PointF mDownPoint;
     private PointF mMiddlePoint;
     private Matrix mMatrix;
@@ -46,6 +45,7 @@ public class ClipImageView extends AppCompatImageView {
     private float mCircleCenterX, mCircleCenterY;
     private float mCircleX, mCircleY;
     private boolean isCutImage;
+    private float mRatio = 1.0f;
 
     public ClipImageView(Context context) {
         super(context);
@@ -95,23 +95,23 @@ public class ClipImageView extends AppCompatImageView {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
+        setRadius();
+    }
+
+    private void setRadius() {
+        mTargetWidth = getScreenWidth(getContext());
+        mTargetHeight = (int) (mTargetWidth * mRatio);
         mCircleCenterX = getWidth() / 2;
         mCircleCenterY = getHeight() / 2;
         mCircleX = mCircleCenterX - mTargetWidth / 2;
         mCircleY = mCircleCenterY - mTargetHeight / 2;
     }
 
-    private void setRadius() {
-
-        int width = getScreenWidth(getContext());
-        int height = getScreenHeight(getContext());
-
-        if (width > height) {
-            mTargetWidth = height;
-            mTargetHeight = height;
-        } else {
-            mTargetWidth = width;
-            mTargetHeight = width;
+    public void setRatio(float ratio) {
+        if (mRatio != ratio) {
+            mRatio = ratio;
+            setRadius();
+            invalidate();
         }
     }
 
@@ -126,14 +126,17 @@ public class ClipImageView extends AppCompatImageView {
             rf = new RectF(r);
         }
         // 画入前景圆形蒙板层
-        int sc = canvas.saveLayer(rf, null,  Canvas.ALL_SAVE_FLAG);
+        int sc = canvas.saveLayer(rf, null, Canvas.ALL_SAVE_FLAG);
         //画入矩形黑色半透明蒙板层
         canvas.drawRect(r, mFrontGroundPaint);
         //设置Xfermode，目的是为了去除矩形黑色半透明蒙板层和圆形的相交部分
         mFrontGroundPaint.setXfermode(mXfermode);
         //画入正方形
-        canvas.drawRect(mCircleCenterX - mTargetWidth / 2, mCircleCenterY - mTargetHeight / 2,
-                mCircleCenterX + mTargetWidth / 2, mCircleCenterY + mTargetHeight / 2, mFrontGroundPaint);
+        float left = mCircleCenterX - mTargetWidth / 2;
+        float top = mCircleCenterY - mTargetHeight / 2;
+        float right = mCircleCenterX + mTargetWidth / 2;
+        float bottom = mCircleCenterY + mTargetHeight / 2;
+        canvas.drawRect(left, top, right, bottom, mFrontGroundPaint);
 
         canvas.restoreToCount(sc);
         //清除Xfermode，防止影响下次画图
@@ -153,10 +156,11 @@ public class ClipImageView extends AppCompatImageView {
         Bitmap targetBitmap = Bitmap.createBitmap(mTargetWidth, mTargetHeight,
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(targetBitmap);
-        RectF dst = new RectF(-bitmap.getWidth() / 2 + mTargetWidth / 2, -getHeight()
-                / 2 + mTargetHeight / 2, bitmap.getWidth() / 2
-                + mTargetWidth / 2, getHeight() / 2 + mTargetHeight / 2);
-
+        int left = -bitmap.getWidth() / 2 + mTargetWidth / 2;
+        int top = -getHeight() / 2 + mTargetHeight / 2;
+        int right = bitmap.getWidth() / 2 + mTargetWidth / 2;
+        int bottom = getHeight() / 2 + mTargetHeight / 2;
+        RectF dst = new RectF(left, top, right, bottom);
         canvas.drawBitmap(bitmap, null, dst, paint);
         setDrawingCacheEnabled(false);
         bitmap.recycle();
@@ -300,33 +304,12 @@ public class ClipImageView extends AppCompatImageView {
      * 横向、纵向居中
      */
     protected void center() {
-
         float height = mBitmapHeight;
         float width = mBitmapWidth;
-        float screenWidth = getWidth();
-        float screenHeight = getHeight();
-        float scale = 1f;
-        if (width >= height) {
-            scale = screenWidth / width;
+        float scale = Math.max(mTargetWidth / width,mTargetHeight / height);
 
-            if (scale * height < mTargetHeight) {
-                scale = mTargetHeight / height;
-            }
-
-        } else {
-            if (height <= screenHeight) {
-                scale = screenWidth / width;
-            } else {
-                scale = screenHeight / height;
-            }
-
-            if (scale * width < mTargetWidth) {
-                scale = mTargetWidth / width;
-            }
-        }
-
-        float deltaX = (screenWidth - width * scale) / 2f;
-        float deltaY = (screenHeight - height * scale) / 2f;
+        float deltaX = -(width * scale - getWidth()) / 2.0f;
+        float deltaY = -(height * scale - getHeight()) / 2.0f;
         mMatrix.postScale(scale, scale);
         mMatrix.postTranslate(deltaX, deltaY);
         setImageMatrix(mMatrix);
@@ -351,4 +334,5 @@ public class ClipImageView extends AppCompatImageView {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
+
 }
