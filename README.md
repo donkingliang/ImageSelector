@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:2.0.0'
+	implementation 'com.github.donkingliang:ImageSelector:2.0.1'
 ```
 
 **2、配置AndroidManifest.xml**
@@ -109,6 +109,7 @@ ImageSelector.builder()
 ImageSelector.builder()
     .useCamera(true) // 设置是否使用拍照
     .setCrop(true)  // 设置是否使用图片剪切功能。
+    .setCropRatio(1.0f) // 图片剪切的宽高比,默认1.0f。宽固定为手机屏幕的宽。
     .setSingle(true)  //设置是否单选
     .canPreview(true) //是否可以预览图片，默认为true
     .start(this, REQUEST_CODE); // 打开相册
@@ -121,6 +122,7 @@ ImageSelector.builder()
 //拍照并剪裁
 ImageSelector.builder()
     .setCrop(true) // 设置是否使用图片剪切功能。
+    .setCropRatio(1.0f) // 图片剪切的宽高比,默认1.0f。宽固定为手机屏幕的宽。
     .onlyTakePhoto(true)  // 仅拍照，不打开相册
     .start(this, REQUEST_CODE);
     
@@ -187,7 +189,7 @@ ImageUtil.isCutImage(mContext, path);
 
 ***2.0.0版本***
 
-迁移androidx。没有使用androidx的项目可以使用1.8.1版本。
+迁移androidx。没有使用androidx的项目可以使用1.8.2版本。
 
 ***1.8.0版本***
 
