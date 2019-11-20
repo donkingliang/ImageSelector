@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="#010101"
-        android:scaleType="centerInside" />
+        android:scaleType="centerCrop" />
 
 </FrameLayout>

@@ -1,11 +1,14 @@
 package com.donkingliang.imageselector.utils;
 
 import android.app.Activity;
+import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
 import com.donkingliang.imageselector.entry.RequestConfig;
+import com.donkingliang.imageselector.model.ImageModel;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,22 @@ public class ImageSelector {
 
     public static final int RESULT_CODE = 0x00000012;
 
+    /**
+     * 预加载图片
+     *
+     * @param context
+     */
+    public static void preload(Context context) {
+        ImageModel.preload(context);
+    }
+
+    /**
+     * 清空缓存
+     */
+    public static void clearCache(Context context) {
+        ImageModel.clearCache(context);
+    }
+
     public static ImageSelectorBuilder builder() {
         return new ImageSelectorBuilder();
     }
@@ -65,12 +84,12 @@ public class ImageSelector {
         }
 
         /**
-         *
          * 图片剪切的宽高比，宽固定为手机屏幕的宽。
+         *
          * @param ratio
          * @return
          */
-        public ImageSelectorBuilder setCropRatio(float ratio){
+        public ImageSelectorBuilder setCropRatio(float ratio) {
             config.cropRatio = ratio;
             return this;
         }
@@ -121,7 +140,7 @@ public class ImageSelector {
             return this;
         }
 
-        public ImageSelectorBuilder onlyTakePhoto(boolean onlyTakePhoto){
+        public ImageSelectorBuilder onlyTakePhoto(boolean onlyTakePhoto) {
             config.onlyTakePhoto = onlyTakePhoto;
             return this;
         }
@@ -158,7 +177,7 @@ public class ImageSelector {
         public void start(Activity activity, int requestCode) {
             config.requestCode = requestCode;
             // 仅拍照，useCamera必须为true
-            if (config.onlyTakePhoto){
+            if (config.onlyTakePhoto) {
                 config.useCamera = true;
             }
             if (config.isCrop) {
@@ -177,7 +196,7 @@ public class ImageSelector {
         public void start(Fragment fragment, int requestCode) {
             config.requestCode = requestCode;
             // 仅拍照，useCamera必须为true
-            if (config.onlyTakePhoto){
+            if (config.onlyTakePhoto) {
                 config.useCamera = true;
             }
             if (config.isCrop) {
@@ -196,7 +215,7 @@ public class ImageSelector {
         public void start(android.app.Fragment fragment, int requestCode) {
             config.requestCode = requestCode;
             // 仅拍照，useCamera必须为true
-            if (config.onlyTakePhoto){
+            if (config.onlyTakePhoto) {
                 config.useCamera = true;
             }
             if (config.isCrop) {

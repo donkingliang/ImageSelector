@@ -285,11 +285,19 @@ public class ImageUtil {
      * @return
      */
     public static boolean isCutImage(Context context, String path) {
+        return isCutImage(getImageCacheDir(context),path);
+    }
+
+    /**
+     * 是否是剪切返回的图片
+     * @param dir
+     * @param path
+     * @return
+     */
+    public static boolean isCutImage(String dir, String path) {
         if (!StringUtils.isEmptyString(path)) {
-            String dir = getImageCacheDir(context);
             return path.startsWith(dir);
         }
         return false;
-
     }
 }

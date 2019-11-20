@@ -113,13 +113,12 @@
         android:layout_alignBottom="@+id/rv_image"
         android:layout_alignTop="@+id/rv_image"
         android:layout_marginTop="80dp"
-        android:background="@android:color/white"
         android:fadingEdge="none"
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"/>
 
     <RelativeLayout
         android:id="@+id/rl_bottom_bar"

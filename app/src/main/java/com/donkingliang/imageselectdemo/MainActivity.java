@@ -37,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_clip).setOnClickListener(this);
         findViewById(R.id.btn_only_take).setOnClickListener(this);
         findViewById(R.id.btn_take_and_clip).setOnClickListener(this);
+
+        //预加载手机图片
+        ImageSelector.preload(this);
     }
 
     @Override

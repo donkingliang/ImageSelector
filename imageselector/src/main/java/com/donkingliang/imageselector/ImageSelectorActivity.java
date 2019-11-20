@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -315,6 +316,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
             public void run() {
                 rvFolder.setTranslationY(rvFolder.getHeight());
                 rvFolder.setVisibility(View.GONE);
+                rvFolder.setBackgroundColor(Color.WHITE);
             }
         });
     }
@@ -674,6 +676,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
      * 从SDCard加载图片。
      */
     private void loadImageForSDCard() {
+       final long time = System.currentTimeMillis();
         ImageModel.loadImageForSDCard(this, new ImageModel.DataCallback() {
             @Override
             public void onSuccess(ArrayList<Folder> folders) {
