@@ -1,11 +1,14 @@
 package com.donkingliang.imageselectdemo;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.donkingliang.imageselectdemo.adapter.ImageAdapter;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQUEST_CODE = 0x00000011;
+    private static final int PERMISSION_WRITE_EXTERNAL_REQUEST_CODE = 0x00000011;
 
     private RecyclerView rvImage;
     private ImageAdapter mAdapter;
@@ -36,6 +40,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_clip).setOnClickListener(this);
         findViewById(R.id.btn_only_take).setOnClickListener(this);
         findViewById(R.id.btn_take_and_clip).setOnClickListener(this);
+
+        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasWriteExternalPermission == PackageManager.PERMISSION_GRANTED) {
+            //预加载手机图片。加载图片前，请确保app有读取储存卡权限
+            ImageSelector.preload(this);
+        } else {
+            //没有权限，申请权限。
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_WRITE_EXTERNAL_REQUEST_CODE);
+        }
     }
 
     @Override
@@ -46,6 +61,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             boolean isCameraImage = data.getBooleanExtra(ImageSelector.IS_CAMERA_IMAGE, false);
 //            Log.d("ImageSelector", "是否是拍照图片：" + isCameraImage);
             mAdapter.refresh(images);
+        }
+    }
+
+    /**
+     * 处理权限申请的回调。
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_WRITE_EXTERNAL_REQUEST_CODE) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //预加载手机图片
+                ImageSelector.preload(this);
+            } else {
+                //拒绝权限。
+            }
         }
     }
 

@@ -315,6 +315,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
             public void run() {
                 rvFolder.setTranslationY(rvFolder.getHeight());
                 rvFolder.setVisibility(View.GONE);
+                rvFolder.setBackgroundColor(Color.WHITE);
             }
         });
     }

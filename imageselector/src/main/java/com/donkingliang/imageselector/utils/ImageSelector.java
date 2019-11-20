@@ -1,11 +1,13 @@
 package com.donkingliang.imageselector.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 
 import com.donkingliang.imageselector.ClipImageActivity;
 import com.donkingliang.imageselector.ImageSelectorActivity;
 import com.donkingliang.imageselector.entry.RequestConfig;
+import com.donkingliang.imageselector.model.ImageModel;
 
 import java.util.ArrayList;
 
@@ -40,6 +42,22 @@ public class ImageSelector {
     public static final String IS_CONFIRM = "is_confirm";
 
     public static final int RESULT_CODE = 0x00000012;
+
+    /**
+     * 预加载图片
+     *
+     * @param context
+     */
+    public static void preload(Context context) {
+        ImageModel.preloadAndRegisterContentObserver(context);
+    }
+
+    /**
+     * 清空缓存
+     */
+    public static void clearCache(Context context) {
+        ImageModel.clearCache(context);
+    }
 
     public static ImageSelectorBuilder builder() {
         return new ImageSelectorBuilder();
