@@ -50,7 +50,7 @@ public class ImageSelector {
      * @param context
      */
     public static void preload(Context context) {
-        ImageModel.preload(context);
+        ImageModel.preloadAndRegisterContentObserver(context);
     }
 
     /**

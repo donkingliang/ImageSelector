@@ -676,7 +676,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
      * 从SDCard加载图片。
      */
     private void loadImageForSDCard() {
-       final long time = System.currentTimeMillis();
         ImageModel.loadImageForSDCard(this, new ImageModel.DataCallback() {
             @Override
             public void onSuccess(ArrayList<Folder> folders) {

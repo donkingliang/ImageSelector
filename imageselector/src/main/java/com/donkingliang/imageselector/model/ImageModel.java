@@ -1,7 +1,9 @@
 package com.donkingliang.imageselector.model;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 public class ImageModel {
 
     /**
@@ -34,14 +38,23 @@ public class ImageModel {
      *
      * @param context
      */
-    public static void preload(final Context context) {
+    public static void preloadAndRegisterContentObserver(final Context context) {
         isNeedCache = true;
         if (observer == null) {
             observer = new PhotoContentObserver(context.getApplicationContext());
             context.getApplicationContext().getContentResolver().registerContentObserver(
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, observer);
         }
-        loadImageForSDCard(context, true, null);
+        preload(context);
+    }
+
+    private static void preload(final Context context) {
+        int hasWriteExternalPermission = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (hasWriteExternalPermission == PackageManager.PERMISSION_GRANTED) {
+            //有权限，加载图片。
+            loadImageForSDCard(context, true, null);
+        }
     }
 
     /**
