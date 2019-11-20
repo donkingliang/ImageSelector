@@ -20,7 +20,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:2.0.1'
+	implementation 'com.github.donkingliang:ImageSelector:2.1.0'
 ```
 
 **2、配置AndroidManifest.xml**
@@ -183,13 +183,35 @@ Bitmap bitmap = ImageUtil.getBitmapFromUri(Context context, Uri uri);
 ImageUtil.isCutImage(mContext, path);
 ```
 
+**图片预加载和缓存**
+
+由于从手机中加载图库是个耗时操作，图片太多时，打开图库可能等待时间过长，用户体验不好。所以在2.1.0版本和1.9.0版本开始，提供了预加载手机图片并缓存的功能。你可以在用户打开图片选择器前，预先加载手机图片，这样在用户打开图片选择器时，会直接从缓存中读取图片列表，大大提升选择器的加载速度。
+
+选择器默认不开启预加载并缓存功能，如果需要预加载，请调用下面的方法：
+```java
+ImageSelector.preload(context);
+```
+调用这个方法的时机没有特殊的要求，只要是在打开选择器前调用就可以了。
+
+***注意：*** 由于加载手机图片需要申请WRITE_EXTERNAL_STORAGE权限，所以在调用该方法前，请确保权限已申请。
+
+在选择器使用完毕，不再需要时，可以调用下面方法清空缓存：
+```java
+ImageSelector.clearCache(context);
+```
+清空缓存的操作不是必须的，如果不清空，缓存会一直保留，直到app被回收。因为缓存的是图片的路径，所以不会占用太多的内存。
+
 **版本节点**
 
 这里记录的是重要的版本更新节点，全部的版本及更新内容请看[这里](https://github.com/donkingliang/ImageSelector/releases)。
 
+***2.1.0版本&1.9.0版本***
+
+添加图片预加载和缓存功能。
+
 ***2.0.0版本***
 
-迁移androidx。没有使用androidx的项目可以使用1.8.2版本。
+迁移androidx。没有使用androidx的项目可以使用1.9.0版本。
 
 ***1.8.0版本***
 
