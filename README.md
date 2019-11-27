@@ -22,6 +22,7 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 ```
 	implementation 'com.github.donkingliang:ImageSelector:2.1.0'
 ```
+从2.0.0版本开始，库迁移androidx。没有使用androidx的项目可以使用1.9.0版本。
 
 **2、配置AndroidManifest.xml**
 
@@ -141,7 +142,7 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
         if (requestCode == REQUEST_CODE && data != null) {
 	    //获取选择器返回的数据
             ArrayList<String> images = data.getStringArrayListExtra(
-            ImageSelectorUtils.SELECT_RESULT);
+            ImageSelector.SELECT_RESULT);
 	    
 	    	/**
      		* 是否是来自于相机拍照的图片，
@@ -152,7 +153,7 @@ REQUEST_CODE就是调用者自己定义的启动Activity时的requestCode，这�
         }
     }
 ```
-ImageSelectorUtils.SELECT_RESULT是接收数据的key。数据是以ArrayList的字符串数组返回的，就算是单选，返回的也是ArrayList数组，只不过这时候ArrayList只有一条数据而已。ArrayList里面的数据就是选中的图片的文件路径。
+ImageSelector.SELECT_RESULT是接收数据的key。数据是以ArrayList的字符串数组返回的，就算是单选，返回的也是ArrayList数组，只不过这时候ArrayList只有一条数据而已。ArrayList里面的数据就是选中的图片的文件路径。
 
 **适配android 10**
 
