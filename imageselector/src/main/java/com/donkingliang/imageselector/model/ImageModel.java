@@ -110,7 +110,8 @@ public class ImageModel {
 
                         for (Image image : imageList) {
                             //过滤未下载完成或者不存在的文件
-                            boolean isEffective = isAndroidQ ? ImageUtil.isEffective(context, image.getUri()) : ImageUtil.isEffective(image.getPath());
+                            boolean isEffective = isAndroidQ ? true  // 由于在Android Q用uri判断图片是否有效的方法耗时，所以去掉判断。
+                                    : ImageUtil.isEffective(image.getPath());
                             //过滤剪切保存的图片；
                             boolean isCutImage = ImageUtil.isCutImage(imageCacheDir, image.getPath());
                             if (isEffective && !isCutImage) {
