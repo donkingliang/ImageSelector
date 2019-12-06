@@ -20,9 +20,9 @@ Android图片选择器，仿微信的图片选择器的样式和效果。支持�
 在Module的build.gradle在添加以下代码
 
 ```
-	implementation 'com.github.donkingliang:ImageSelector:2.1.0'
+	implementation 'com.github.donkingliang:ImageSelector:2.1.1'
 ```
-从2.0.0版本开始，库迁移androidx。没有使用androidx的项目可以使用1.9.0版本。
+从2.0.0版本开始，库迁移androidx。没有使用androidx的项目可以使用1.9.1版本。
 
 **2、配置AndroidManifest.xml**
 
@@ -212,7 +212,7 @@ ImageSelector.clearCache(context);
 
 ***2.0.0版本***
 
-迁移androidx。没有使用androidx的项目可以使用1.9.0版本。
+迁移androidx。没有使用androidx的项目可以使用1.9.1版本。
 
 ***1.8.0版本***
 
