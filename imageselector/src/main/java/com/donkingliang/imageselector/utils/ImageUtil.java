@@ -57,7 +57,7 @@ public class ImageUtil {
             file.mkdirs();// 创建文件夹
         }
 
-        String fileName = path + File.separator + name;
+        String fileName = path + File.separator + name + ".jpg";
 
         try {
             b = new FileOutputStream(fileName);
