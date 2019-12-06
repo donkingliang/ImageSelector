@@ -421,7 +421,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
         int firstVisibleItem = getFirstVisibleItem();
         Image image = mAdapter.getFirstVisibleImage(firstVisibleItem);
         if (image != null) {
-            String time = DateUtils.getImageTime(this, image.getTime() * 1000);
+            String time = DateUtils.getImageTime(this, image.getTime());
             tvTime.setText(time);
             showTime();
             mHideHandler.removeCallbacks(mHide);

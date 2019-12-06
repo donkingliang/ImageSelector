@@ -21,6 +21,7 @@ import com.donkingliang.imageselector.utils.VersionUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ImageModel {
@@ -106,6 +107,18 @@ public class ImageModel {
                     ArrayList<Folder> folders = null;
                     if (cacheImageList == null || isPreload) {
                         ArrayList<Image> imageList = loadImage(context);
+                        Collections.sort(imageList, new Comparator<Image>() {
+                            @Override
+                            public int compare(Image image, Image t1) {
+                                if (image.getTime() > t1.getTime()) {
+                                    return 1;
+                                } else if (image.getTime() < t1.getTime()) {
+                                    return -1;
+                                } else {
+                                    return 0;
+                                }
+                            }
+                        });
                         ArrayList<Image> images = new ArrayList<>();
 
                         for (Image image : imageList) {
@@ -172,6 +185,10 @@ public class ImageModel {
                 //获取图片时间
                 long time = mCursor.getLong(
                         mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+
+                if (String.valueOf(time).length() < 13) {
+                    time *= 1000;
+                }
 
                 //获取图片类型
                 String mimeType = mCursor.getString(
