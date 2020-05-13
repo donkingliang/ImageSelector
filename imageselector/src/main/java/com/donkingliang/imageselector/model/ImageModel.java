@@ -15,7 +15,6 @@ import com.donkingliang.imageselector.entry.Image;
 import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.StringUtils;
 import com.donkingliang.imageselector.utils.UriUtils;
-import com.donkingliang.imageselector.utils.VersionUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -103,7 +102,6 @@ public class ImageModel {
             @Override
             public void run() {
                 synchronized (ImageModel.class) {
-                    boolean isAndroidQ = VersionUtils.isAndroidQ();
                     String imageCacheDir = ImageUtil.getImageCacheDir(context);
                     ArrayList<Folder> folders = null;
                     if (cacheImageList == null || isPreload) {
@@ -123,12 +121,11 @@ public class ImageModel {
                         ArrayList<Image> images = new ArrayList<>();
 
                         for (Image image : imageList) {
-                            //过滤未下载完成或者不存在的文件
-                            boolean isEffective = isAndroidQ ? true  // 由于在Android Q用uri判断图片是否有效的方法耗时，所以去掉判断。
-                                    : ImageUtil.isEffective(image.getPath());
+                            // 过滤不存在或未下载完成的图片
+                            boolean exists = !"downloading".equals(getExtensionName(image.getPath())) && checkImgExists(image.getPath());
                             //过滤剪切保存的图片；
                             boolean isCutImage = ImageUtil.isCutImage(imageCacheDir, image.getPath());
-                            if (isEffective && !isCutImage) {
+                            if (!isCutImage && exists) {
                                 images.add(image);
                             }
                         }
@@ -166,10 +163,11 @@ public class ImageModel {
                         MediaStore.Images.Media.DISPLAY_NAME,
                         MediaStore.Images.Media.DATE_ADDED,
                         MediaStore.Images.Media._ID,
-                        MediaStore.Images.Media.MIME_TYPE},
+                        MediaStore.Images.Media.MIME_TYPE,
+                        MediaStore.Images.Media.SIZE},
+                MediaStore.MediaColumns.SIZE + ">0",
                 null,
-                null,
-                MediaStore.Images.Media.DATE_ADDED);
+                MediaStore.Images.Media.DATE_ADDED + " DESC");
 
         ArrayList<Image> images = new ArrayList<>();
 

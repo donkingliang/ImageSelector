@@ -453,41 +453,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
         //点击确定，把选中的图片通过Intent传给上一个Activity。
         setResult(images, isCameraImage);
         finish();
-
-//        if (!VersionUtils.isAndroidQ() || images.isEmpty()) {
-//            //点击确定，把选中的图片通过Intent传给上一个Activity。
-//            setResult(images, isCameraImage);
-//            finish();
-//        }
-//
-//        // 适配android 10，先把图片拷贝到app私有目录
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                final ArrayList<String> newImages = new ArrayList<>();
-//                Context context = ImageSelectorActivity.this;
-//                String dir = ImageUtil.getImageCacheDir(context);
-//                for (String image : images) {
-//                    String md5 = MD5Utils.md5(image);
-//                    if (md5 != null) {
-//                        Bitmap bitmap = ImageUtil.getBitmapFromUri(context, UriUtils.getImageContentUri(context, image), null);
-//                        if (bitmap != null) {
-//                            String newImage = ImageUtil.saveImage(bitmap, dir, md5);
-//                            if (!StringUtils.isEmptyString(newImage)) {
-//                                newImages.add(newImage);
-//                            }
-//                        }
-//                    }
-//                }
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        setResult(newImages, isCameraImage);
-//                        finish();
-//                    }
-//                });
-//            }
-//        }).start();
     }
 
     private void setResult(ArrayList<String> images, boolean isCameraImage) {

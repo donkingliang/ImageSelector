@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">imageselector</string>
     <string name="selector_image">图片</string>
     <string name="selector_send">确定</string>
     <string name="selector_preview">预览</string>
