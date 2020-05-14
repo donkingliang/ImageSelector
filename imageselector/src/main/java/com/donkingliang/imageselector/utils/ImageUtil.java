@@ -1,7 +1,10 @@
 package com.donkingliang.imageselector.utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -9,13 +12,19 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.util.Log;
+
+import com.donkingliang.imageselector.entry.Image;
 
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class ImageUtil {
 
@@ -301,5 +310,58 @@ public class ImageUtil {
             return path.startsWith(dir);
         }
         return false;
+    }
+
+    /**
+     * 保存拍照的图片
+     *
+     * @param context
+     * @param uri
+     */
+    public static void savePicture(final Context context, final Uri uri) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (isNeedSavePicture(context)) {
+                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 是否需要保存拍照的图片
+     *
+     * @param context
+     * @return
+     */
+    private static boolean isNeedSavePicture(Context context) {
+        //扫描图片
+        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver mContentResolver = context.getContentResolver();
+        Cursor mCursor = mContentResolver.query(mImageUri, new String[]{
+                        MediaStore.Images.Media.DATE_ADDED,
+                        MediaStore.Images.Media._ID},
+                null,
+                null,
+                MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0");
+
+        //读取扫描到的图片
+        if (mCursor != null && mCursor.getCount() > 0 && mCursor.moveToFirst()) {
+            //获取图片时间
+            long time = mCursor.getLong(
+                    mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+
+            if (String.valueOf(time).length() < 13) {
+                time *= 1000;
+            }
+            Date date = new Date(time);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+            mCursor.close();
+            // 如果照片为30s中内插入的，就认为是拍照图片已插入
+            return System.currentTimeMillis() - time > 30 * 1000;
+        }
+        return true;
     }
 }

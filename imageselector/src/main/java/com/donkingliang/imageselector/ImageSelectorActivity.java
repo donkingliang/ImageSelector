@@ -46,6 +46,7 @@ import com.donkingliang.imageselector.entry.RequestConfig;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.UriUtils;
 import com.donkingliang.imageselector.utils.VersionUtils;
 
@@ -504,13 +505,15 @@ public class ImageSelectorActivity extends AppCompatActivity {
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<String> images = new ArrayList<>();
+                Uri savePictureUri = null;
                 if (VersionUtils.isAndroidQ()) {
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
+                    savePictureUri = mCameraUri;
                     images.add(UriUtils.getPathForUri(this, mCameraUri));
                 } else {
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mCameraImagePath))));
+                    savePictureUri = Uri.fromFile(new File(mCameraImagePath));
                     images.add(mCameraImagePath);
                 }
+                ImageUtil.savePicture(this,savePictureUri);
                 saveImageAndFinish(images, true);
             } else {
                 if (onlyTakePhoto) {
