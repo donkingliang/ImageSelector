@@ -15,16 +15,11 @@ import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.util.Log;
 
-import com.donkingliang.imageselector.entry.Image;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 
 public class ImageUtil {
 
@@ -355,8 +350,6 @@ public class ImageUtil {
             if (String.valueOf(time).length() < 13) {
                 time *= 1000;
             }
-            Date date = new Date(time);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
             mCursor.close();
             // 如果照片为30s中内插入的，就认为是拍照图片已插入
