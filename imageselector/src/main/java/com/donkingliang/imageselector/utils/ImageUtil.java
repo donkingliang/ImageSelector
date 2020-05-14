@@ -9,7 +9,6 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.io.File;
@@ -27,19 +26,20 @@ public class ImageUtil {
      * @return
      */
     public static String getImageCacheDir(Context context) {
-        String cachePath;
+        File file = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
-            // context.getFilesDir().getPath(); 不这样写  有些机型会报错
             if (VersionUtils.isAndroidQ()) {
-                cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+                file = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             } else {
-                cachePath = context.getExternalCacheDir().getPath();
+                file = context.getExternalCacheDir();
             }
-        } else {
-            cachePath = context.getCacheDir().getPath();
         }
-        return cachePath + File.separator + "image_select";
+
+        if (file == null) {
+            file = context.getCacheDir();
+        }
+        return file.getPath() + File.separator + "image_select";
     }
 
     /**
@@ -280,16 +280,18 @@ public class ImageUtil {
 
     /**
      * 是否是剪切返回的图片
+     *
      * @param context
      * @param path
      * @return
      */
     public static boolean isCutImage(Context context, String path) {
-        return isCutImage(getImageCacheDir(context),path);
+        return isCutImage(getImageCacheDir(context), path);
     }
 
     /**
      * 是否是剪切返回的图片
+     *
      * @param dir
      * @param path
      * @return
