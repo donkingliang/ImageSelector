@@ -82,6 +82,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 0x00000010;
     private Uri mCameraUri;
     private String mCameraImagePath;
+    private long mTakeTime;
 
     private boolean isOpenFolder;
     private boolean isShowTime;
@@ -513,7 +514,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
                     savePictureUri = Uri.fromFile(new File(mCameraImagePath));
                     images.add(mCameraImagePath);
                 }
-                ImageUtil.savePicture(this,savePictureUri);
+                ImageUtil.savePicture(this,savePictureUri,mTakeTime);
                 saveImageAndFinish(images, true);
             } else {
                 if (onlyTakePhoto) {
@@ -702,6 +703,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 captureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivityForResult(captureIntent, CAMERA_REQUEST_CODE);
+                mTakeTime = System.currentTimeMillis();
             }
         }
     }
