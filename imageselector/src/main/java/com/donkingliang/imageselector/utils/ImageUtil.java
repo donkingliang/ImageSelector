@@ -1,7 +1,10 @@
 package com.donkingliang.imageselector.utils;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -9,7 +12,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.ParcelFileDescriptor;
-import android.text.format.DateFormat;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
@@ -17,6 +20,9 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ImageUtil {
 
@@ -27,19 +33,20 @@ public class ImageUtil {
      * @return
      */
     public static String getImageCacheDir(Context context) {
-        String cachePath;
+        File file = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
-            // context.getFilesDir().getPath(); 不这样写  有些机型会报错
             if (VersionUtils.isAndroidQ()) {
-                cachePath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES).getPath();
+                file = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             } else {
-                cachePath = context.getExternalCacheDir().getPath();
+                file = context.getExternalCacheDir();
             }
-        } else {
-            cachePath = context.getCacheDir().getPath();
         }
-        return cachePath + File.separator + "image_select";
+
+        if (file == null) {
+            file = context.getCacheDir();
+        }
+        return file.getPath() + File.separator + "image_select";
     }
 
     /**
@@ -280,16 +287,18 @@ public class ImageUtil {
 
     /**
      * 是否是剪切返回的图片
+     *
      * @param context
      * @param path
      * @return
      */
     public static boolean isCutImage(Context context, String path) {
-        return isCutImage(getImageCacheDir(context),path);
+        return isCutImage(getImageCacheDir(context), path);
     }
 
     /**
      * 是否是剪切返回的图片
+     *
      * @param dir
      * @param path
      * @return
@@ -299,5 +308,56 @@ public class ImageUtil {
             return path.startsWith(dir);
         }
         return false;
+    }
+
+    /**
+     * 保存拍照的图片
+     *
+     * @param context
+     * @param uri
+     * @param takeTime 调起相机拍照的时间
+     */
+    public static void savePicture(final Context context, final Uri uri, final long takeTime) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (isNeedSavePicture(context, takeTime)) {
+                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
+                }
+            }
+        }).start();
+    }
+
+    /**
+     * 是否需要保存拍照的图片
+     *
+     * @param context
+     * @return
+     */
+    private static boolean isNeedSavePicture(Context context, long takeTime) {
+        //扫描图片
+        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        ContentResolver mContentResolver = context.getContentResolver();
+        Cursor mCursor = mContentResolver.query(mImageUri, new String[]{
+                        MediaStore.Images.Media.DATE_ADDED,
+                        MediaStore.Images.Media._ID,
+                        MediaStore.Images.Media.SIZE},
+                MediaStore.MediaColumns.SIZE + ">0",
+                null,
+                MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0");
+
+        //读取扫描到的图片
+        if (mCursor != null && mCursor.getCount() > 0 && mCursor.moveToFirst()) {
+            //获取图片时间
+            long time = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Images.Media.DATE_ADDED));
+            int id = mCursor.getInt(mCursor.getColumnIndex(MediaStore.Images.Media._ID));
+            if (String.valueOf(time).length() < 13) {
+                time *= 1000;
+            }
+            mCursor.close();
+            // 如果照片的插入时间大于相机的拍照时间，就认为是拍照图片已插入
+            return time + 1000 < takeTime;
+        }
+        return true;
     }
 }

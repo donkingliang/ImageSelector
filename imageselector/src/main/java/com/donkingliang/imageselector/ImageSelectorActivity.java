@@ -44,6 +44,7 @@ import com.donkingliang.imageselector.entry.RequestConfig;
 import com.donkingliang.imageselector.model.ImageModel;
 import com.donkingliang.imageselector.utils.DateUtils;
 import com.donkingliang.imageselector.utils.ImageSelector;
+import com.donkingliang.imageselector.utils.ImageUtil;
 import com.donkingliang.imageselector.utils.UriUtils;
 import com.donkingliang.imageselector.utils.VersionUtils;
 
@@ -79,6 +80,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 0x00000010;
     private Uri mCameraUri;
     private String mCameraImagePath;
+    private long mTakeTime;
 
     private boolean isOpenFolder;
     private boolean isShowTime;
@@ -451,41 +453,6 @@ public class ImageSelectorActivity extends AppCompatActivity {
         //点击确定，把选中的图片通过Intent传给上一个Activity。
         setResult(images, isCameraImage);
         finish();
-
-//        if (!VersionUtils.isAndroidQ() || images.isEmpty()) {
-//            //点击确定，把选中的图片通过Intent传给上一个Activity。
-//            setResult(images, isCameraImage);
-//            finish();
-//        }
-//
-//        // 适配android 10，先把图片拷贝到app私有目录
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                final ArrayList<String> newImages = new ArrayList<>();
-//                Context context = ImageSelectorActivity.this;
-//                String dir = ImageUtil.getImageCacheDir(context);
-//                for (String image : images) {
-//                    String md5 = MD5Utils.md5(image);
-//                    if (md5 != null) {
-//                        Bitmap bitmap = ImageUtil.getBitmapFromUri(context, UriUtils.getImageContentUri(context, image), null);
-//                        if (bitmap != null) {
-//                            String newImage = ImageUtil.saveImage(bitmap, dir, md5);
-//                            if (!StringUtils.isEmptyString(newImage)) {
-//                                newImages.add(newImage);
-//                            }
-//                        }
-//                    }
-//                }
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        setResult(newImages, isCameraImage);
-//                        finish();
-//                    }
-//                });
-//            }
-//        }).start();
     }
 
     private void setResult(ArrayList<String> images, boolean isCameraImage) {
@@ -537,13 +504,15 @@ public class ImageSelectorActivity extends AppCompatActivity {
         } else if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 ArrayList<String> images = new ArrayList<>();
+                Uri savePictureUri = null;
                 if (VersionUtils.isAndroidQ()) {
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mCameraUri));
+                    savePictureUri = mCameraUri;
                     images.add(UriUtils.getPathForUri(this, mCameraUri));
                 } else {
-                    sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mCameraImagePath))));
+                    savePictureUri = Uri.fromFile(new File(mCameraImagePath));
                     images.add(mCameraImagePath);
                 }
+                ImageUtil.savePicture(this,savePictureUri,mTakeTime);
                 saveImageAndFinish(images, true);
             } else {
                 if (onlyTakePhoto) {
@@ -732,6 +701,7 @@ public class ImageSelectorActivity extends AppCompatActivity {
                 captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 captureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 startActivityForResult(captureIntent, CAMERA_REQUEST_CODE);
+                mTakeTime = System.currentTimeMillis();
             }
         }
     }

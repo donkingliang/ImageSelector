@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">imageselector</string>
     <string name="selector_image">Photos</string>
     <string name="selector_send">Send</string>
     <string name="selector_preview">Preview</string>
