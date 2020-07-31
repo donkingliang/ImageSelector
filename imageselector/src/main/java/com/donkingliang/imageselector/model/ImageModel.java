@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import androidx.core.content.ContextCompat;
+
 public class ImageModel {
 
     /**

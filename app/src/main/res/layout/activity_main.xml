@@ -57,7 +57,7 @@
         android:layout_toRightOf="@+id/btn_only_take"
         android:text="拍照并剪裁" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

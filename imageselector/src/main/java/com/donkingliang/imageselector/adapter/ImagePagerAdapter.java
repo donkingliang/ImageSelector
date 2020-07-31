@@ -3,9 +3,11 @@ package com.donkingliang.imageselector.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
+
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -75,8 +77,8 @@ public class ImagePagerAdapter extends PagerAdapter {
         container.addView(currentView);
         if (image.isGif()) {
             currentView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath()).override(720,1080)
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+            Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath())
+                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE)).override(720,1080)
                     .into(currentView);
         } else {
             Glide.with(mContext).asBitmap()

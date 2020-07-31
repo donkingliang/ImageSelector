@@ -4,11 +4,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.donkingliang.imageselectdemo.adapter.ImageAdapter;
@@ -19,7 +20,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQUEST_CODE = 0x00000011;
-    private static final int PERMISSION_WRITE_EXTERNAL_REQUEST_CODE = 0x00000011;
+
+    private static final int PERMISSION_WRITE_EXTERNAL_REQUEST_CODE = 0x00000012;
 
     private RecyclerView rvImage;
     private ImageAdapter mAdapter;
