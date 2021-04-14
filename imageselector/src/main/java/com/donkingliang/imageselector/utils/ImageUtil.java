@@ -319,6 +319,7 @@ public class ImageUtil {
             @Override
             public void run() {
                 if (isNeedSavePicture(context, takeTime)) {
+                    Log.e("eee","-----");
                     context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
                 }
             }
@@ -333,7 +334,8 @@ public class ImageUtil {
      */
     private static boolean isNeedSavePicture(Context context, long takeTime) {
         //扫描图片
-        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                .buildUpon().appendQueryParameter("limit","1").build();
         ContentResolver mContentResolver = context.getContentResolver();
         Cursor mCursor = mContentResolver.query(mImageUri, new String[]{
                         MediaStore.Images.Media.DATE_ADDED,
@@ -341,7 +343,7 @@ public class ImageUtil {
                         MediaStore.Images.Media.SIZE},
                 MediaStore.MediaColumns.SIZE + ">0",
                 null,
-                MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0");
+                MediaStore.Files.FileColumns._ID + " DESC");
 
         //读取扫描到的图片
         if (mCursor != null && mCursor.getCount() > 0 && mCursor.moveToFirst()) {
@@ -352,6 +354,7 @@ public class ImageUtil {
                 time *= 1000;
             }
             mCursor.close();
+
             // 如果照片的插入时间大于相机的拍照时间，就认为是拍照图片已插入
             return time + 1000 < takeTime;
         }

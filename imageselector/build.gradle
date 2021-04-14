@@ -3,10 +3,10 @@ apply plugin: 'com.android.library'
 group='com.github.donkingliang' // 指定group，com.github.<用户名>
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }

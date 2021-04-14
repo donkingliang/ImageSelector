@@ -43,7 +43,7 @@ public class ImageModel {
         if (observer == null) {
             observer = new PhotoContentObserver(context.getApplicationContext());
             context.getApplicationContext().getContentResolver().registerContentObserver(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, observer);
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, true, observer);
         }
         preload(context);
     }
