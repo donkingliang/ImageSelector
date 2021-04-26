@@ -336,7 +336,8 @@ public class ImageUtil {
      */
     private static boolean isNeedSavePicture(Context context, long takeTime) {
         //扫描图片
-        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                .buildUpon().appendQueryParameter("limit","1").build();
         ContentResolver mContentResolver = context.getContentResolver();
         Cursor mCursor = mContentResolver.query(mImageUri, new String[]{
                         MediaStore.Images.Media.DATE_ADDED,
@@ -344,7 +345,7 @@ public class ImageUtil {
                         MediaStore.Images.Media.SIZE},
                 MediaStore.MediaColumns.SIZE + ">0",
                 null,
-                MediaStore.Files.FileColumns._ID + " DESC limit 1 offset 0");
+                MediaStore.Files.FileColumns._ID + " DESC");
 
         //读取扫描到的图片
         if (mCursor != null && mCursor.getCount() > 0 && mCursor.moveToFirst()) {
