@@ -319,7 +319,6 @@ public class ImageUtil {
             @Override
             public void run() {
                 if (isNeedSavePicture(context, takeTime)) {
-                    Log.e("eee","-----");
                     context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri));
                 }
             }
