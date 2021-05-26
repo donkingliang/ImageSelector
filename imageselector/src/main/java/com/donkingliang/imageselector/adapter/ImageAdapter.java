@@ -66,7 +66,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         if (getItemViewType(position) == TYPE_IMAGE) {
             final Image image = getImage(position);
             Glide.with(mContext).load(isAndroidQ ? image.getUri() : image.getPath())
-                    .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .apply(new RequestOptions().override(200,200))
                     .into(holder.ivImage);
 
             setItemSelect(holder, mSelectImages.contains(image));
@@ -103,6 +105,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                     }
                 }
             });
+        }
+    }
+	
+	//清理已经看不到的ImageView
+	@Override
+    public void onViewRecycled(@NonNull ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (getItemViewType(holder.getAdapterPosition()) == TYPE_IMAGE) {
+            ImageView imageView = holder.ivImage;
+            if (imageView != null) {
+                Glide.with(mContext).clear(imageView);
+            }
         }
     }
 

@@ -22,7 +22,6 @@ import android.view.MotionEvent;
 import android.view.WindowManager;
 
 public class ClipImageView extends AppCompatImageView {
-
     private PointF mDownPoint;
     private PointF mMiddlePoint;
     private Matrix mMatrix;
@@ -338,4 +337,5 @@ public class ClipImageView extends AppCompatImageView {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.heightPixels;
     }
+
 }

@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 
 import com.donkingliang.imageselectdemo.adapter.ImageAdapter;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final int REQUEST_CODE = 0x00000011;
+
     private static final int PERMISSION_WRITE_EXTERNAL_REQUEST_CODE = 0x00000012;
 
     private RecyclerView rvImage;

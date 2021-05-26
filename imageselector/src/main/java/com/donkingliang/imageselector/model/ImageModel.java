@@ -8,6 +8,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 
 import com.donkingliang.imageselector.R;
 import com.donkingliang.imageselector.entry.Folder;
