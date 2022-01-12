@@ -20,6 +20,8 @@ public class RequestConfig implements Parcelable {
     public int maxSelectCount; //图片的最大选择数量，小于等于0时，不限数量，isSingle为false时才有用。
     public ArrayList<String> selected; //接收从外面传进来的已选择的图片列表。当用户原来已经有选择过图片，重新打开选择器，允许用户把先前选过的图片传进来，并把这些图片默认为选中状态。
     public float cropRatio = 1.0f; // 图片剪切的宽高比，宽固定为手机屏幕的宽。
+    public float outWidth = 200;
+    public float outHeight = 200;
     public int requestCode;
 
 
@@ -38,6 +40,8 @@ public class RequestConfig implements Parcelable {
         dest.writeInt(this.maxSelectCount);
         dest.writeStringList(this.selected);
         dest.writeFloat(this.cropRatio);
+        dest.writeFloat(this.outWidth);
+        dest.writeFloat(this.outHeight);
         dest.writeInt(this.requestCode);
     }
 
@@ -53,6 +57,8 @@ public class RequestConfig implements Parcelable {
         this.maxSelectCount = in.readInt();
         this.selected = in.createStringArrayList();
         this.cropRatio = in.readFloat();
+        this.outWidth = in.readFloat();
+        this.outHeight = in.readFloat();
         this.requestCode = in.readInt();
     }
 
