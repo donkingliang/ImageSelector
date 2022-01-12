@@ -32,6 +32,7 @@ public class ClipImageActivity extends Activity {
     private int mRequestCode;
     private boolean isCameraImage;
     private float cropRatio;
+    RequestConfig config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class ClipImageActivity extends Activity {
         setContentView(R.layout.activity_clip_image);
 
         Intent intent = getIntent();
-        RequestConfig config = intent.getParcelableExtra(ImageSelector.KEY_CONFIG);
+        config = intent.getParcelableExtra(ImageSelector.KEY_CONFIG);
         mRequestCode = config.requestCode;
         config.isSingle = true;
         config.maxSelectCount = 0;
@@ -82,7 +83,7 @@ public class ClipImageActivity extends Activity {
             }
         });
 
-        imageView.setRatio(cropRatio);
+        imageView.setRatio(cropRatio, config.outWidth, config.outHeight);
     }
 
     @Override

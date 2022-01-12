@@ -89,8 +89,15 @@ public class ImageSelector {
          * @param ratio
          * @return
          */
-        public ImageSelectorBuilder setCropRatio(float ratio) {
+        /*public ImageSelectorBuilder setCropRatio(float ratio) {
             config.cropRatio = ratio;
+            return this;
+        }*/
+
+        public ImageSelectorBuilder setCropRatio(float ratio, float outWidth, float outHeight) {
+            config.cropRatio = ratio;
+            config.outWidth = outWidth;
+            config.outHeight = outHeight;
             return this;
         }
 

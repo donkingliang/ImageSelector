@@ -105,18 +105,40 @@ public class ClipImageView extends AppCompatImageView {
     private void setRadius() {
         mTargetWidth = getScreenWidth(getContext());
         mTargetHeight = (int) (mTargetWidth * mRatio);
+
+        if(outWidth == 0f){
+            outWidth = mTargetWidth;
+        }
+
+        if(outHeight == 0f){
+            outHeight = mTargetHeight;
+        }
+
         mCircleCenterX = getWidth() / 2;
         mCircleCenterY = getHeight() / 2;
         mCircleX = mCircleCenterX - mTargetWidth / 2;
         mCircleY = mCircleCenterY - mTargetHeight / 2;
     }
 
-    public void setRatio(float ratio) {
+    /*public void setRatio(float ratio) {
         if (mRatio != ratio) {
             mRatio = ratio;
             setRadius();
             invalidate();
         }
+    }*/
+
+    float outWidth = 0f;
+    float outHeight = 0f;
+    public void setRatio(float ratio, float outWidth, float outHeight) {
+        if (mRatio != ratio) {
+            mRatio = ratio;
+            setRadius();
+            invalidate();
+        }
+
+        this.outWidth = outWidth;
+        this.outHeight = outHeight;
     }
 
     @Override
@@ -171,7 +193,20 @@ public class ClipImageView extends AppCompatImageView {
         bitmap = null;
         isCutImage = false;
         //返回正方形图片
-        return targetBitmap;
+
+        if(outWidth == 0f && outHeight == 0f){
+            return targetBitmap;
+        }
+
+        float scaleWidth = ((float) outWidth) / mTargetWidth;
+        float scaleHeight = ((float) outHeight) / mTargetHeight;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap newbm = Bitmap.createBitmap(targetBitmap, 0, 0, mTargetWidth, mTargetHeight, matrix, true);
+        targetBitmap.recycle();
+        targetBitmap = null;
+
+        return newbm;
     }
 
     @Override
